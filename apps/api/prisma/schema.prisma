@@ -1,3 +1,6 @@
+// Prisma schema defining tenancy application data model
+// Business tables include orgId for organization scoping
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,7 +10,243 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  landlord
+  property_manager
+  tenant
+  tradesperson
+  admin
+}
+
+model Organization {
+  id             String           @id @default(cuid())
+  name           String
+  createdAt      DateTime         @default(now())
+  memberships    Membership[]
+  properties     Property[]
+  apiKeys        ApiKey[]
+  plans          Plan[]
+  featureFlags   FeatureFlag[]
+  auditLogs      AuditLog[]
+  Unit           Unit[]
+  Household      Household[]
+  Lease          Lease[]
+  Invoice        Invoice[]
+  Payment        Payment[]
+  Ticket         Ticket[]
+  Visit          Visit[]
+  UtilityReading UtilityReading[]
+  Deposit        Deposit[]
+  Document       Document[]
+  Notification   Notification[]
+}
+
 model User {
-  id    String @id @default(cuid())
-  email String @unique
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  createdAt     DateTime       @default(now())
+  memberships   Membership[]
+  notifications Notification[]
+  auditLogs     AuditLog[]     @relation("ActorLogs")
+}
+
+model Membership {
+  id         String       @id @default(cuid())
+  org        Organization @relation(fields: [orgId], references: [id])
+  orgId      String
+  user       User         @relation(fields: [userId], references: [id])
+  userId     String
+  role       Role
+  createdAt  DateTime     @default(now())
+  households Household[]  @relation("HouseholdMembers")
+  Ticket     Ticket[]
+}
+
+model Property {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  name      String
+  address   String?
+  units     Unit[]
+  visits    Visit[]
+  tickets   Ticket[]
+  createdAt DateTime     @default(now())
+}
+
+model Unit {
+  id              String           @id @default(cuid())
+  org             Organization     @relation(fields: [orgId], references: [id])
+  orgId           String
+  property        Property         @relation(fields: [propertyId], references: [id])
+  propertyId      String
+  name            String
+  households      Household[]
+  leases          Lease[]
+  utilityReadings UtilityReading[]
+  tickets         Ticket[]
+  visits          Visit[]
+  createdAt       DateTime         @default(now())
+}
+
+model Household {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  unit      Unit         @relation(fields: [unitId], references: [id])
+  unitId    String
+  members   Membership[] @relation("HouseholdMembers")
+  leases    Lease[]
+  createdAt DateTime     @default(now())
+}
+
+model Lease {
+  id          String       @id @default(cuid())
+  org         Organization @relation(fields: [orgId], references: [id])
+  orgId       String
+  unit        Unit         @relation(fields: [unitId], references: [id])
+  unitId      String
+  household   Household    @relation(fields: [householdId], references: [id])
+  householdId String
+  startDate   DateTime
+  endDate     DateTime?
+  invoices    Invoice[]
+  deposits    Deposit[]
+  documents   Document[]   @relation("LeaseDocuments")
+  createdAt   DateTime     @default(now())
+}
+
+model Invoice {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  lease     Lease        @relation(fields: [leaseId], references: [id])
+  leaseId   String
+  amount    Float
+  dueDate   DateTime
+  payments  Payment[]
+  createdAt DateTime     @default(now())
+}
+
+model Payment {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  invoice   Invoice      @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  amount    Float
+  paidAt    DateTime     @default(now())
+}
+
+model Ticket {
+  id          String       @id @default(cuid())
+  org         Organization @relation(fields: [orgId], references: [id])
+  orgId       String
+  unit        Unit         @relation(fields: [unitId], references: [id])
+  unitId      String
+  createdBy   Membership?  @relation(fields: [createdById], references: [id])
+  createdById String?
+  description String
+  status      String
+  visits      Visit[]
+  documents   Document[]   @relation("TicketDocuments")
+  createdAt   DateTime     @default(now())
+  Property    Property?    @relation(fields: [propertyId], references: [id])
+  propertyId  String?
+}
+
+model Visit {
+  id          String       @id @default(cuid())
+  org         Organization @relation(fields: [orgId], references: [id])
+  orgId       String
+  ticket      Ticket?      @relation(fields: [ticketId], references: [id])
+  ticketId    String?
+  property    Property?    @relation(fields: [propertyId], references: [id])
+  propertyId  String?
+  scheduledAt DateTime
+  notes       String?
+  Unit        Unit?        @relation(fields: [unitId], references: [id])
+  unitId      String?
+}
+
+model UtilityReading {
+  id         String       @id @default(cuid())
+  org        Organization @relation(fields: [orgId], references: [id])
+  orgId      String
+  unit       Unit         @relation(fields: [unitId], references: [id])
+  unitId     String
+  type       String
+  reading    Float
+  recordedAt DateTime     @default(now())
+}
+
+model Deposit {
+  id         String       @id @default(cuid())
+  org        Organization @relation(fields: [orgId], references: [id])
+  orgId      String
+  lease      Lease        @relation(fields: [leaseId], references: [id])
+  leaseId    String
+  amount     Float
+  receivedAt DateTime
+  returnedAt DateTime?
+}
+
+model Document {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  url       String
+  lease     Lease?       @relation("LeaseDocuments", fields: [leaseId], references: [id])
+  leaseId   String?
+  ticket    Ticket?      @relation("TicketDocuments", fields: [ticketId], references: [id])
+  ticketId  String?
+  createdAt DateTime     @default(now())
+}
+
+model Notification {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  message   String
+  read      Boolean      @default(false)
+  createdAt DateTime     @default(now())
+}
+
+model ApiKey {
+  id         String       @id @default(cuid())
+  org        Organization @relation(fields: [orgId], references: [id])
+  orgId      String
+  key        String       @unique
+  createdAt  DateTime     @default(now())
+  lastUsedAt DateTime?
+}
+
+model Plan {
+  id        String        @id @default(cuid())
+  org       Organization? @relation(fields: [orgId], references: [id])
+  orgId     String?
+  name      String
+  createdAt DateTime      @default(now())
+}
+
+model FeatureFlag {
+  id      String        @id @default(cuid())
+  org     Organization? @relation(fields: [orgId], references: [id])
+  orgId   String?
+  name    String
+  enabled Boolean       @default(false)
+}
+
+model AuditLog {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  actor     User?        @relation("ActorLogs", fields: [actorId], references: [id])
+  actorId   String?
+  action    String
+  target    String?
+  createdAt DateTime     @default(now())
 }
