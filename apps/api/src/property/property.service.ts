@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { Injectable, Scope } from '@nestjs/common';
+import { PropertyRepository } from './property.repository';
 
-/** Service demonstrating organization scoped queries. */
-@Injectable()
+/** Service demonstrating organization scoped queries using BaseRepository. */
+@Injectable({ scope: Scope.REQUEST })
 export class PropertyService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly repo: PropertyRepository) {}
 
-  list(orgId: string) {
-    return this.prisma.property.findMany({ where: { orgId } });
+  list() {
+    return this.repo.findMany();
   }
 }
