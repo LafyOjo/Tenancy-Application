@@ -114,6 +114,8 @@ model Property {
   visits    Visit[]
   tickets   Ticket[]
   createdAt DateTime     @default(now())
+  imageUrl  String?
+  deletedAt DateTime?
 }
 
 model Unit {
@@ -129,6 +131,8 @@ model Unit {
   tickets         Ticket[]
   visits          Visit[]
   createdAt       DateTime         @default(now())
+  imageUrl        String?
+  deletedAt       DateTime?
 }
 
 model Household {

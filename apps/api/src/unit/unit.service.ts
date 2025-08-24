@@ -1,23 +1,23 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { PropertyRepository } from './property.repository';
+import { UnitRepository } from './unit.repository';
 import { S3Service } from '../s3.service';
 
 @Injectable({ scope: Scope.REQUEST })
-export class PropertyService {
+export class UnitService {
   constructor(
-    private readonly repo: PropertyRepository,
+    private readonly repo: UnitRepository,
     private readonly s3: S3Service,
   ) {}
 
-  list() {
-    return this.repo.findMany({ include: { units: true } });
+  list(propertyId: string) {
+    return this.repo.findMany({ where: { propertyId } });
   }
 
   get(id: string) {
-    return this.repo.findUnique(id, { include: { units: true } });
+    return this.repo.findUnique(id);
   }
 
-  create(data: { name: string; address?: string }) {
+  create(data: { name: string; propertyId: string }) {
     return this.repo.create(data);
   }
 
@@ -30,9 +30,10 @@ export class PropertyService {
   }
 
   async createPhotoUpload(id: string, filename: string, contentType: string) {
-    const key = `properties/${id}/${Date.now()}-${filename}`;
+    const key = `units/${id}/${Date.now()}-${filename}`;
     const signed = await this.s3.getSignedUploadUrl(key, contentType);
     await this.repo.update(id, { imageUrl: signed.url });
     return signed;
   }
 }
+
