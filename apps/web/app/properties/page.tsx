@@ -11,6 +11,15 @@ export default async function PropertiesPage() {
   return (
     <div>
       <h1>Properties</h1>
+      <div>
+        <a href="/properties/import">Import CSV</a>
+        <a
+          href={`${process.env.NEXT_PUBLIC_API_URL}/properties:export`}
+          style={{ marginLeft: '1rem' }}
+        >
+          Export CSV
+        </a>
+      </div>
       <ul>
         {properties.map((p: any) => (
           <li key={p.id}>
