@@ -1,0 +1,9 @@
+{
+  "name": "Tenancy Web",
+  "short_name": "Tenancy",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "description": "PWA for Tenancy web app",
+  "icons": []
+}
