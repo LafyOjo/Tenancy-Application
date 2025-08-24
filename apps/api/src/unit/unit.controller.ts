@@ -1,0 +1,65 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { z } from 'zod';
+import { UnitService } from './unit.service';
+
+const UnitCreate = z.object({
+  name: z.string(),
+  propertyId: z.string(),
+});
+
+const UnitUpdate = UnitCreate.partial();
+
+const UploadPhoto = z.object({
+  filename: z.string(),
+  contentType: z.string(),
+});
+
+@ApiTags('units')
+@Controller('units')
+export class UnitController {
+  constructor(private readonly service: UnitService) {}
+
+  @Get()
+  list(@Query('propertyId') propertyId: string) {
+    return this.service.list(propertyId);
+  }
+
+  @Get(':id')
+  get(@Param('id') id: string) {
+    return this.service.get(id);
+  }
+
+  @Post()
+  create(@Body() body: any) {
+    const data = UnitCreate.parse(body);
+    return this.service.create(data);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: any) {
+    const data = UnitUpdate.parse(body);
+    return this.service.update(id, data);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.service.delete(id);
+  }
+
+  @Post(':id/photo')
+  uploadPhoto(@Param('id') id: string, @Body() body: any) {
+    const { filename, contentType } = UploadPhoto.parse(body);
+    return this.service.createPhotoUpload(id, filename, contentType);
+  }
+}
+
