@@ -5,9 +5,10 @@ import { PrismaService } from './prisma.service';
 import { PropertyService } from './property/property.service';
 import { PropertyRepository } from './property/property.repository';
 import { TenantGuard } from './tenant.guard';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [],
+  imports: [AuthModule],
   controllers: [AppController],
   providers: [
     AppService,
