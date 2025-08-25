@@ -169,6 +169,19 @@ model Household {
   createdAt DateTime     @default(now())
 }
 
+enum RentFrequency {
+  weekly
+  monthly
+  yearly
+}
+
+enum LeaseStatus {
+  draft
+  active
+  renewing
+  ended
+}
+
 model Lease {
   id          String       @id @default(cuid())
   org         Organization @relation(fields: [orgId], references: [id])
@@ -179,6 +192,13 @@ model Lease {
   householdId String
   startDate   DateTime
   endDate     DateTime?
+  rentAmount  Float
+  rentFrequency RentFrequency
+  depositAmount Float?
+  utilityAllowances Json?
+  autoRenew   Boolean      @default(false)
+  breakClause String?
+  status      LeaseStatus  @default(draft)
   invoices    Invoice[]
   deposits    Deposit[]
   documents   Document[]   @relation("LeaseDocuments")

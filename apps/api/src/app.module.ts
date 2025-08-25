@@ -16,6 +16,9 @@ import { DeviceController } from './device/device.controller';
 import { DeviceRepository } from './device/device.repository';
 import { DeviceService } from './device/device.service';
 import { SmartDeviceProvider } from './device/smart-device.provider';
+import { LeaseController } from './lease/lease.controller';
+import { LeaseRepository } from './lease/lease.repository';
+import { LeaseService } from './lease/lease.service';
 
 @Module({
   imports: [AuthModule],
@@ -25,6 +28,7 @@ import { SmartDeviceProvider } from './device/smart-device.provider';
     UnitController,
     PropertyImportExportController,
     DeviceController,
+    LeaseController,
   ],
   providers: [
     AppService,
@@ -37,6 +41,8 @@ import { SmartDeviceProvider } from './device/smart-device.provider';
     DeviceRepository,
     DeviceService,
     SmartDeviceProvider,
+    LeaseRepository,
+    LeaseService,
     TenantGuard,
   ],
 })
