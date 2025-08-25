@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -21,9 +22,13 @@ import { LeaseRepository } from './lease/lease.repository';
 import { LeaseService } from './lease/lease.service';
 import { PdfService } from './lease/pdf.service';
 import { EsignService } from './lease/esign.service';
+import { CertificateController } from './certificate/certificate.controller';
+import { CertificateService } from './certificate/certificate.service';
+import { CertificateRepository } from './certificate/certificate.repository';
+import { CertificateReminderService } from './certificate/certificate.scheduler';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, ScheduleModule.forRoot()],
   controllers: [
     AppController,
     PropertyController,
@@ -31,6 +36,7 @@ import { EsignService } from './lease/esign.service';
     PropertyImportExportController,
     DeviceController,
     LeaseController,
+    CertificateController,
   ],
   providers: [
     AppService,
@@ -48,6 +54,9 @@ import { EsignService } from './lease/esign.service';
     PdfService,
     EsignService,
     TenantGuard,
+    CertificateRepository,
+    CertificateService,
+    CertificateReminderService,
   ],
 })
 export class AppModule {}

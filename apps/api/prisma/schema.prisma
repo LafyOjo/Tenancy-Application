@@ -113,6 +113,7 @@ model Property {
   units     Unit[]
   visits    Visit[]
   tickets   Ticket[]
+  certificates Certificate[]
   createdAt DateTime     @default(now())
   imageUrl  String?
   deletedAt DateTime?
@@ -131,11 +132,32 @@ model Unit {
   tickets         Ticket[]
   visits          Visit[]
   devices         Device[]
+  certificates   Certificate[]
   createdAt       DateTime         @default(now())
   imageUrl        String?
   virtualTourEmbedUrl String?
   virtualTourImages  String[]      @default([])
   deletedAt       DateTime?
+}
+
+enum CertificateType {
+  gas_safety
+  epc
+  electrical_safety
+}
+
+model Certificate {
+  id         String           @id @default(cuid())
+  org        Organization     @relation(fields: [orgId], references: [id])
+  orgId      String
+  property   Property?        @relation(fields: [propertyId], references: [id])
+  propertyId String?
+  unit       Unit?            @relation(fields: [unitId], references: [id])
+  unitId     String?
+  type       CertificateType
+  expiryDate DateTime
+  fileUrl    String?
+  createdAt  DateTime         @default(now())
 }
 
 enum DeviceType {
