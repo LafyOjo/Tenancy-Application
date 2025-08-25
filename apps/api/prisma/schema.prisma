@@ -130,11 +130,32 @@ model Unit {
   utilityReadings UtilityReading[]
   tickets         Ticket[]
   visits          Visit[]
+  devices         Device[]
   createdAt       DateTime         @default(now())
   imageUrl        String?
   virtualTourEmbedUrl String?
   virtualTourImages  String[]      @default([])
   deletedAt       DateTime?
+}
+
+enum DeviceType {
+  lock
+  thermostat
+}
+
+model Device {
+  id         String       @id @default(cuid())
+  org        Organization @relation(fields: [orgId], references: [id])
+  orgId      String
+  unit       Unit         @relation(fields: [unitId], references: [id])
+  unitId     String
+  type       DeviceType
+  adapter    String
+  externalId String
+  name       String?
+  metadata   Json?
+  createdAt  DateTime     @default(now())
+  deletedAt  DateTime?
 }
 
 model Household {

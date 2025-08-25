@@ -12,6 +12,10 @@ import { S3Service } from './s3.service';
 import { UnitRepository } from './unit/unit.repository';
 import { UnitService } from './unit/unit.service';
 import { UnitController } from './unit/unit.controller';
+import { DeviceController } from './device/device.controller';
+import { DeviceRepository } from './device/device.repository';
+import { DeviceService } from './device/device.service';
+import { SmartDeviceProvider } from './device/smart-device.provider';
 
 @Module({
   imports: [AuthModule],
@@ -20,6 +24,7 @@ import { UnitController } from './unit/unit.controller';
     PropertyController,
     UnitController,
     PropertyImportExportController,
+    DeviceController,
   ],
   providers: [
     AppService,
@@ -29,6 +34,9 @@ import { UnitController } from './unit/unit.controller';
     PropertyService,
     UnitRepository,
     UnitService,
+    DeviceRepository,
+    DeviceService,
+    SmartDeviceProvider,
     TenantGuard,
   ],
 })
