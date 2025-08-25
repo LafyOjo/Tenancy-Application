@@ -32,6 +32,7 @@ export default async function PropertyDetail({ params }: Props) {
           </li>
         ))}
       </ul>
+      <a href={`/properties/${property.id}/certificates`}>Certificates</a>
     </div>
   );
 }
