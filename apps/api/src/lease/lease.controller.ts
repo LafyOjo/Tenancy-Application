@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
 import { LeaseService } from './lease.service';
@@ -30,6 +30,24 @@ export class LeaseController {
       startDate: new Date(data.startDate),
       endDate: data.endDate ? new Date(data.endDate) : undefined,
     });
+  }
+
+  /** Generate and return a lease PDF URL. */
+  @Get(':id/pdf')
+  pdf(@Param('id') id: string) {
+    return this.service.generatePdf(id);
+  }
+
+  /** Start e-sign process for the lease. */
+  @Post(':id/esign/start')
+  startEsign(@Param('id') id: string) {
+    return this.service.startEsign(id);
+  }
+
+  /** Webhook endpoint for e-sign completion. */
+  @Post('esign/webhook')
+  esignWebhook(@Body() body: any) {
+    return this.service.handleWebhook(body);
   }
 }
 

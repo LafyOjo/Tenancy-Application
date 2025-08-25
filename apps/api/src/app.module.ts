@@ -19,6 +19,8 @@ import { SmartDeviceProvider } from './device/smart-device.provider';
 import { LeaseController } from './lease/lease.controller';
 import { LeaseRepository } from './lease/lease.repository';
 import { LeaseService } from './lease/lease.service';
+import { PdfService } from './lease/pdf.service';
+import { EsignService } from './lease/esign.service';
 
 @Module({
   imports: [AuthModule],
@@ -43,6 +45,8 @@ import { LeaseService } from './lease/lease.service';
     SmartDeviceProvider,
     LeaseRepository,
     LeaseService,
+    PdfService,
+    EsignService,
     TenantGuard,
   ],
 })
