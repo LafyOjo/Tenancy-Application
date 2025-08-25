@@ -33,6 +33,19 @@ export class S3Service {
     return { uploadUrl, url: this.getPublicUrl(key), key };
   }
 
+  /** Directly upload a file buffer to S3. */
+  async upload(key: string, body: Buffer, contentType: string) {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: body,
+        ContentType: contentType,
+      }),
+    );
+    return { url: this.getPublicUrl(key), key };
+  }
+
   /** Public URL for an object. */
   getPublicUrl(key: string) {
     const base =
