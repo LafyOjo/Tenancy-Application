@@ -132,6 +132,8 @@ model Unit {
   visits          Visit[]
   createdAt       DateTime         @default(now())
   imageUrl        String?
+  virtualTourEmbedUrl String?
+  virtualTourImages  String[]      @default([])
   deletedAt       DateTime?
 }
 
