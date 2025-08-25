@@ -17,7 +17,11 @@ export class UnitService {
     return this.repo.findUnique(id);
   }
 
-  create(data: { name: string; propertyId: string }) {
+  create(data: {
+    name: string;
+    propertyId: string;
+    virtualTourEmbedUrl?: string;
+  }) {
     return this.repo.create(data);
   }
 
@@ -33,6 +37,19 @@ export class UnitService {
     const key = `units/${id}/${Date.now()}-${filename}`;
     const signed = await this.s3.getSignedUploadUrl(key, contentType);
     await this.repo.update(id, { imageUrl: signed.url });
+    return signed;
+  }
+
+  async createVirtualTourImageUpload(
+    id: string,
+    filename: string,
+    contentType: string,
+  ) {
+    const key = `units/${id}/virtual-tours/${Date.now()}-${filename}`;
+    const signed = await this.s3.getSignedUploadUrl(key, contentType);
+    await this.repo.update(id, {
+      virtualTourImages: { push: signed.url },
+    });
     return signed;
   }
 }

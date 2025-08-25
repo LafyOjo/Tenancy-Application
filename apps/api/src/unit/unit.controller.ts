@@ -15,6 +15,7 @@ import { UnitService } from './unit.service';
 const UnitCreate = z.object({
   name: z.string(),
   propertyId: z.string(),
+  virtualTourEmbedUrl: z.string().url().optional(),
 });
 
 const UnitUpdate = UnitCreate.partial();
@@ -60,6 +61,12 @@ export class UnitController {
   uploadPhoto(@Param('id') id: string, @Body() body: any) {
     const { filename, contentType } = UploadPhoto.parse(body);
     return this.service.createPhotoUpload(id, filename, contentType);
+  }
+
+  @Post(':id/virtual-tour/photo')
+  uploadVirtualTourPhoto(@Param('id') id: string, @Body() body: any) {
+    const { filename, contentType } = UploadPhoto.parse(body);
+    return this.service.createVirtualTourImageUpload(id, filename, contentType);
   }
 }
 
