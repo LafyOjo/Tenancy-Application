@@ -40,6 +40,11 @@ model Organization {
   Deposit        Deposit[]
   Document       Document[]
   Notification   Notification[]
+  Certificate    Certificate[]
+  Device         Device[]
+  LeaseAmendment LeaseAmendment[]
+  Notice         Notice[]
+  LedgerEntry    LedgerEntry[]
 }
 
 model User {
@@ -234,6 +239,8 @@ model Lease {
   deposits    Deposit[]
   documents   Document[]   @relation("LeaseDocuments")
   amendments  LeaseAmendment[]
+  notices     Notice[]
+  ledgerEntries LedgerEntry[]
   mandates    PaymentMandate[]
   createdAt   DateTime     @default(now())
 }
@@ -425,4 +432,17 @@ model AuditLog {
   action    String
   target    String?
   createdAt DateTime     @default(now())
+}
+
+model LedgerEntry {
+  id           String       @id @default(cuid())
+  org          Organization @relation(fields: [orgId], references: [id])
+  orgId        String
+  lease        Lease?       @relation(fields: [leaseId], references: [id])
+  leaseId      String?
+  date         DateTime     @default(now())
+  description  String?
+  debitAccount String
+  creditAccount String
+  amount       Float
 }
