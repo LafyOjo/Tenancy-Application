@@ -31,6 +31,10 @@ import { CertificateRepository } from './certificate/certificate.repository';
 import { CertificateReminderService } from './certificate/certificate.scheduler';
 import { PricingController } from './pricing/pricing.controller';
 import { PricingService } from './pricing/pricing.service';
+import { NoticeController } from './notice/notice.controller';
+import { NoticeRepository } from './notice/notice.repository';
+import { NoticeService } from './notice/notice.service';
+import { NoticePdfService } from './notice/pdf.service';
 
 @Module({
   imports: [AuthModule, ScheduleModule.forRoot()],
@@ -44,6 +48,7 @@ import { PricingService } from './pricing/pricing.service';
     AmendmentController,
     PricingController,
     CertificateController,
+    NoticeController,
   ],
   providers: [
     AppService,
@@ -67,6 +72,9 @@ import { PricingService } from './pricing/pricing.service';
     CertificateRepository,
     CertificateService,
     CertificateReminderService,
+    NoticeRepository,
+    NoticeService,
+    NoticePdfService,
   ],
 })
 export class AppModule {}
