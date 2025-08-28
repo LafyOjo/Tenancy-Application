@@ -16,6 +16,10 @@ export class SquareProvider implements PaymentProvider {
     return { url: `https://square.example/pay/${invoiceId}` };
   }
 
+  async createSubscription(plan: string) {
+    return { url: `https://square.example/subscribe/${plan}` };
+  }
+
   async parseWebhook(payload: any) {
     return {
       id: payload.id,

@@ -16,6 +16,10 @@ export class PaypalProvider implements PaymentProvider {
     return { url: `https://paypal.example/pay/${invoiceId}` };
   }
 
+  async createSubscription(plan: string) {
+    return { url: `https://paypal.example/subscribe/${plan}` };
+  }
+
   async parseWebhook(payload: any) {
     return {
       id: payload.id,

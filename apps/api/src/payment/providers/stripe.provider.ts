@@ -16,6 +16,10 @@ export class StripeProvider implements PaymentProvider {
     return { url: `https://stripe.example/pay/${invoiceId}` };
   }
 
+  async createSubscription(plan: string) {
+    return { url: `https://stripe.example/subscribe/${plan}` };
+  }
+
   async parseWebhook(payload: any) {
     return {
       id: payload.id,

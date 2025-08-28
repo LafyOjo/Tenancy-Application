@@ -4,6 +4,7 @@ import { PaymentProvider } from './providers/payment-provider.interface';
 import { StripeProvider } from './providers/stripe.provider';
 import { PaypalProvider } from './providers/paypal.provider';
 import { SquareProvider } from './providers/square.provider';
+import { SubscriptionPlan } from '@tenancy/types';
 
 @Injectable()
 export class PaymentService {
@@ -43,6 +44,21 @@ export class PaymentService {
     const provider = this.providers[providerKey];
     if (!provider) throw new Error('Unknown provider');
     return provider.createOneOffLink(invoiceId);
+  }
+
+  async createSubscription(
+    membershipId: string,
+    providerKey: string,
+    plan: SubscriptionPlan,
+  ) {
+    const provider = this.providers[providerKey];
+    if (!provider) throw new Error('Unknown provider');
+    const session = await provider.createSubscription(plan);
+    await this.prisma.membership.update({
+      where: { id: membershipId },
+      data: { subscriptionPlan: plan },
+    });
+    return session;
   }
 
   async handleWebhook(providerKey: string, payload: any) {

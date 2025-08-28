@@ -20,7 +20,24 @@ export class TicketService {
     return this.repo.findUnique(id, { include: { category: true } });
   }
 
-  create(data: any) {
+  async create(data: any) {
+    const orgId = (this.request as any).orgId;
+    const userId = (this.request as any).user?.id;
+    if (orgId && userId) {
+      const membership = await this.prisma.membership.findFirst({
+        where: { orgId, userId },
+      });
+      if (membership?.subscriptionPlan === 'priority_support') {
+        data.priority = 'high';
+      } else if (membership?.subscriptionPlan === 'discounted_repairs') {
+        if (typeof data.partsCost === 'number') {
+          data.partsCost = data.partsCost * 0.9;
+        }
+        if (typeof data.labourCost === 'number') {
+          data.labourCost = data.labourCost * 0.9;
+        }
+      }
+    }
     return this.repo.create(data);
   }
 
