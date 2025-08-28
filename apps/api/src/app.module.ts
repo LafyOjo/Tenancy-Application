@@ -45,6 +45,8 @@ import { PaypalProvider } from './payment/providers/paypal.provider';
 import { SquareProvider } from './payment/providers/square.provider';
 import { LedgerController } from './ledger/ledger.controller';
 import { LedgerService } from './ledger/ledger.service';
+import { SublettingController } from './subletting/subletting.controller';
+import { SublettingService } from './subletting/subletting.service';
 
 @Module({
   imports: [AuthModule, ScheduleModule.forRoot()],
@@ -62,6 +64,7 @@ import { LedgerService } from './ledger/ledger.service';
     InvoiceController,
     PaymentController,
     LedgerController,
+    SublettingController,
   ],
   providers: [
     AppService,
@@ -95,6 +98,7 @@ import { LedgerService } from './ledger/ledger.service';
     PaypalProvider,
     SquareProvider,
     LedgerService,
+    SublettingService,
   ],
 })
 export class AppModule {}
