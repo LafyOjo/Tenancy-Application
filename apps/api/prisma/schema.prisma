@@ -339,6 +339,18 @@ model Document {
   createdAt DateTime     @default(now())
 }
 
+model Notice {
+  id            String       @id @default(cuid())
+  org           Organization @relation(fields: [orgId], references: [id])
+  orgId         String
+  lease         Lease        @relation(fields: [leaseId], references: [id])
+  leaseId       String
+  type          String
+  pdfUrl        String
+  acknowledgedAt DateTime?
+  createdAt     DateTime     @default(now())
+}
+
 model Notification {
   id        String       @id @default(cuid())
   org       Organization @relation(fields: [orgId], references: [id])
