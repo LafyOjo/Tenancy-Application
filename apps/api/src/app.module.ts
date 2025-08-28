@@ -57,6 +57,9 @@ import { SensorEventController } from './sensor/sensor-event.controller';
 import { SensorEventProcessor } from './sensor/sensor-event.processor';
 import { MarketplaceController } from './marketplace/marketplace.controller';
 import { MarketplaceService } from './marketplace/marketplace.service';
+import { VisitController } from './visit/visit.controller';
+import { VisitRepository } from './visit/visit.repository';
+import { VisitService } from './visit/visit.service';
 
 @Module({
   imports: [
@@ -86,6 +89,7 @@ import { MarketplaceService } from './marketplace/marketplace.service';
     LedgerController,
     SublettingController,
     TicketController,
+    VisitController,
     SensorEventController,
     MarketplaceController,
   ],
@@ -125,6 +129,8 @@ import { MarketplaceService } from './marketplace/marketplace.service';
     SublettingService,
     TicketRepository,
     TicketService,
+    VisitRepository,
+    VisitService,
     SensorEventService,
     SensorEventProcessor,
     MarketplaceService,
