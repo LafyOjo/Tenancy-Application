@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ImageUploader } from '@/components/ImageUploader';
 
 interface Props {
@@ -12,6 +12,25 @@ export default function UnitDetailClient({ unit }: Props) {
   const [embedUrl, setEmbedUrl] = useState(unit.virtualTourEmbedUrl || '');
   const [saving, setSaving] = useState(false);
   const [images, setImages] = useState<string[]>(unit.virtualTourImages || []);
+  const [pricing, setPricing] = useState<any>(null);
+
+  useEffect(() => {
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/pricing/suggestions?unitId=${unit.id}`,
+    )
+      .then((res) => res.json())
+      .then((data) => setPricing(data));
+  }, [unit.id]);
+
+  async function applySuggestion() {
+    if (!pricing?.leaseId) return;
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/leases/${pricing.leaseId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rentAmount: pricing.suggestedRent }),
+    });
+    setPricing({ ...pricing, currentRent: pricing.suggestedRent });
+  }
 
   async function saveEmbed() {
     setSaving(true);
@@ -38,6 +57,15 @@ export default function UnitDetailClient({ unit }: Props) {
           <ImageUploader
             uploadUrlEndpoint={`${process.env.NEXT_PUBLIC_API_URL}/units/${unit.id}/photo`}
           />
+          {pricing && (
+            <div className="mt-4 space-y-2">
+              <div>Current rent: £{pricing.currentRent}</div>
+              <div>Suggested rent: £{pricing.suggestedRent}</div>
+              <button onClick={applySuggestion} className="border px-2">
+                Apply to draft lease
+              </button>
+            </div>
+          )}
         </div>
       )}
       {tab === 'virtual' && (
