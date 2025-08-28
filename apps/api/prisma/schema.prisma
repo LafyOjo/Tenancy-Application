@@ -115,6 +115,7 @@ model Membership {
   createdAt    DateTime       @default(now())
   households   Household[]    @relation("HouseholdMembers")
   Ticket       Ticket[]
+  assignedTickets Ticket[] @relation("TicketAssignedTo")
   TicketNote   TicketNote[]
   LeaseShare   LeaseShare[]
   InvoiceShare InvoiceShare[]
@@ -365,6 +366,14 @@ model Ticket {
   status      TicketStatus   @default(open)
   category    TicketCategory @relation(fields: [categoryId], references: [id])
   categoryId  String?
+  assignedTo   Membership?    @relation("TicketAssignedTo", fields: [assignedToId], references: [id])
+  assignedToId String?
+  assignmentStatus AssignmentStatus @default(pending)
+  eta         DateTime?
+  partsCost   Float?      @default(0)
+  labourCost  Float?      @default(0)
+  rating      Int?
+  review      String?
   notes       TicketNote[]
   visits      Visit[]
   documents   Document[]   @relation("TicketDocuments")
@@ -389,6 +398,12 @@ enum TicketStatus {
   open
   in_progress
   completed
+}
+
+enum AssignmentStatus {
+  pending
+  accepted
+  declined
 }
 
 model TicketCategory {

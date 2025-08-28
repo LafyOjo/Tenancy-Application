@@ -55,6 +55,19 @@ export default async function TicketsPage() {
             >
               <p>{t.description}</p>
               <SlaBadge ticket={t} />
+              <p>Assigned: {t.assignedToId ? t.assignedToId : 'Unassigned'}</p>
+              {t.eta && <p>ETA: {new Date(t.eta).toLocaleString()}</p>}
+              {(t.partsCost || t.labourCost) && (
+                <p>
+                  Cost: £{(t.partsCost || 0) + (t.labourCost || 0)} (parts £{t.partsCost || 0}, labour £{t.labourCost || 0})
+                </p>
+              )}
+              {t.status === 'completed' && (
+                <p>
+                  {t.rating ? `Rating: ${t.rating}/5` : 'Awaiting review'}
+                  {t.review && <span> - {t.review}</span>}
+                </p>
+              )}
             </div>
           ))}
         </div>
