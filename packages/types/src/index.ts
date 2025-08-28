@@ -31,3 +31,28 @@ export interface LedgerEntry {
   creditAccount: string;
   amount: number;
 }
+
+export interface SublettingApproval {
+  id: string;
+  orgId: string;
+  leaseId: string;
+  revenueShare: number;
+  createdAt: Date;
+}
+
+export interface AirbnbIntegration {
+  id: string;
+  orgId: string;
+  listingId: string;
+  active: boolean;
+  createdAt: Date;
+}
+
+export interface SublettingPayout {
+  id: string;
+  orgId: string;
+  approvalId: string;
+  amount: number;
+  platformFee: number;
+  createdAt: Date;
+}
