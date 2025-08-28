@@ -8,11 +8,12 @@ interface Props {
 }
 
 export default function UnitDetailClient({ unit }: Props) {
-  const [tab, setTab] = useState<'details' | 'virtual'>('details');
+  const [tab, setTab] = useState<'details' | 'virtual' | 'events'>('details');
   const [embedUrl, setEmbedUrl] = useState(unit.virtualTourEmbedUrl || '');
   const [saving, setSaving] = useState(false);
   const [images, setImages] = useState<string[]>(unit.virtualTourImages || []);
   const [pricing, setPricing] = useState<any>(null);
+  const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
     fetch(
@@ -21,6 +22,13 @@ export default function UnitDetailClient({ unit }: Props) {
       .then((res) => res.json())
       .then((data) => setPricing(data));
   }, [unit.id]);
+
+  useEffect(() => {
+    if (tab !== 'events') return;
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/units/${unit.id}/events`)
+      .then((res) => res.json())
+      .then((data) => setEvents(data));
+  }, [tab, unit.id]);
 
   async function applySuggestion() {
     if (!pricing?.leaseId) return;
@@ -48,6 +56,7 @@ export default function UnitDetailClient({ unit }: Props) {
       <div className="flex gap-2">
         <button onClick={() => setTab('details')}>Details</button>
         <button onClick={() => setTab('virtual')}>Virtual Tour</button>
+        <button onClick={() => setTab('events')}>IoT Events</button>
       </div>
       {tab === 'details' && (
         <div>
@@ -93,6 +102,21 @@ export default function UnitDetailClient({ unit }: Props) {
               <img key={url} src={url} alt="virtual tour" className="h-48" />
             ))}
           </div>
+        </div>
+      )}
+      {tab === 'events' && (
+        <div className="mt-4 space-y-2">
+          {events.map((e) => (
+            <div key={e.id} className="border-b pb-2">
+              <div>
+                {new Date(e.createdAt).toLocaleString()} - {e.type}
+                {e.value !== null && e.value !== undefined && ` (${e.value})`} -
+                risk {e.riskScore}
+              </div>
+              <div className="text-sm text-gray-600">{e.action}</div>
+            </div>
+          ))}
+          {!events.length && <div>No events</div>}
         </div>
       )}
     </div>
