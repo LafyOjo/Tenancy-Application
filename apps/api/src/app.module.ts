@@ -60,6 +60,8 @@ import { MarketplaceService } from './marketplace/marketplace.service';
 import { VisitController } from './visit/visit.controller';
 import { VisitRepository } from './visit/visit.repository';
 import { VisitService } from './visit/visit.service';
+import { AssessmentController } from './assessment/assessment.controller';
+import { AssessmentService } from './assessment/assessment.service';
 
 @Module({
   imports: [
@@ -92,6 +94,7 @@ import { VisitService } from './visit/visit.service';
     VisitController,
     SensorEventController,
     MarketplaceController,
+    AssessmentController,
   ],
   providers: [
     AppService,
@@ -134,6 +137,7 @@ import { VisitService } from './visit/visit.service';
     SensorEventService,
     SensorEventProcessor,
     MarketplaceService,
+    AssessmentService,
   ],
 })
 export class AppModule {}
