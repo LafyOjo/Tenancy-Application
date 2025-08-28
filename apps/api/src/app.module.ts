@@ -55,6 +55,8 @@ import { TicketService } from './ticket/ticket.service';
 import { SensorEventService } from './sensor/sensor-event.service';
 import { SensorEventController } from './sensor/sensor-event.controller';
 import { SensorEventProcessor } from './sensor/sensor-event.processor';
+import { MarketplaceController } from './marketplace/marketplace.controller';
+import { MarketplaceService } from './marketplace/marketplace.service';
 
 @Module({
   imports: [
@@ -85,6 +87,7 @@ import { SensorEventProcessor } from './sensor/sensor-event.processor';
     SublettingController,
     TicketController,
     SensorEventController,
+    MarketplaceController,
   ],
   providers: [
     AppService,
@@ -124,6 +127,7 @@ import { SensorEventProcessor } from './sensor/sensor-event.processor';
     TicketService,
     SensorEventService,
     SensorEventProcessor,
+    MarketplaceService,
   ],
 })
 export class AppModule {}

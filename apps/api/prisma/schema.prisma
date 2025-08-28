@@ -53,6 +53,7 @@ model Organization {
   AirbnbIntegration  AirbnbIntegration[]
   SublettingPayout   SublettingPayout[]
   SensorEvent        SensorEvent[]
+  ServiceJob        ServiceJob[]
 }
 
 model User {
@@ -592,4 +593,29 @@ model SublettingPayout {
   amount      Float
   platformFee Float
   createdAt   DateTime           @default(now())
+}
+
+model TradespersonProfile {
+  id           String        @id @default(cuid())
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String        @unique
+  categories   String[]
+  coverageArea String
+  hourlyRate   Float
+  createdAt    DateTime      @default(now())
+  jobs         ServiceJob[]
+}
+
+model ServiceJob {
+  id             String              @id @default(cuid())
+  org            Organization        @relation(fields: [orgId], references: [id])
+  orgId          String
+  tradesperson   TradespersonProfile @relation(fields: [tradespersonId], references: [id])
+  tradespersonId String
+  description    String
+  price          Float
+  platformFee    Float
+  status         String              @default("pending")
+  createdAt      DateTime            @default(now())
+  completedAt    DateTime?
 }
