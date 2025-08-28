@@ -1,0 +1,12 @@
+CREATE TABLE "SensorEvent" (
+  "id" TEXT NOT NULL PRIMARY KEY,
+  "orgId" TEXT NOT NULL,
+  "unitId" TEXT NOT NULL,
+  "type" TEXT NOT NULL,
+  "value" DOUBLE PRECISION,
+  "riskScore" INTEGER NOT NULL,
+  "action" TEXT NOT NULL,
+  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "SensorEvent_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT "SensorEvent_unitId_fkey" FOREIGN KEY ("unitId") REFERENCES "Unit"("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

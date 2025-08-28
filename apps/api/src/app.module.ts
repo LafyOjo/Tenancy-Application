@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -51,9 +52,22 @@ import { SublettingService } from './subletting/subletting.service';
 import { TicketController } from './ticket/ticket.controller';
 import { TicketRepository } from './ticket/ticket.repository';
 import { TicketService } from './ticket/ticket.service';
+import { SensorEventService } from './sensor/sensor-event.service';
+import { SensorEventController } from './sensor/sensor-event.controller';
+import { SensorEventProcessor } from './sensor/sensor-event.processor';
 
 @Module({
-  imports: [AuthModule, ScheduleModule.forRoot()],
+  imports: [
+    AuthModule,
+    ScheduleModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: +(process.env.REDIS_PORT || 6379),
+      },
+    }),
+    BullModule.registerQueue({ name: 'sensor-events' }),
+  ],
   controllers: [
     AppController,
     PropertyController,
@@ -70,6 +84,7 @@ import { TicketService } from './ticket/ticket.service';
     LedgerController,
     SublettingController,
     TicketController,
+    SensorEventController,
   ],
   providers: [
     AppService,
@@ -107,6 +122,8 @@ import { TicketService } from './ticket/ticket.service';
     SublettingService,
     TicketRepository,
     TicketService,
+    SensorEventService,
+    SensorEventProcessor,
   ],
 })
 export class AppModule {}

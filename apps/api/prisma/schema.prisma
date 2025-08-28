@@ -52,6 +52,7 @@ model Organization {
   SublettingApproval SublettingApproval[]
   AirbnbIntegration  AirbnbIntegration[]
   SublettingPayout   SublettingPayout[]
+  SensorEvent        SensorEvent[]
 }
 
 model User {
@@ -150,6 +151,7 @@ model Unit {
   visits              Visit[]
   devices             Device[]
   certificates        Certificate[]
+  sensorEvents        SensorEvent[]
   createdAt           DateTime         @default(now())
   imageUrl            String?
   virtualTourEmbedUrl String?
@@ -195,6 +197,19 @@ model Device {
   metadata   Json?
   createdAt  DateTime     @default(now())
   deletedAt  DateTime?
+}
+
+model SensorEvent {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  unit      Unit         @relation(fields: [unitId], references: [id])
+  unitId    String
+  type      String
+  value     Float?
+  riskScore Int
+  action    String
+  createdAt DateTime     @default(now())
 }
 
 model Household {
@@ -364,7 +379,7 @@ model Ticket {
   type        TicketType
   priority    TicketPriority
   status      TicketStatus   @default(open)
-  category    TicketCategory @relation(fields: [categoryId], references: [id])
+  category    TicketCategory? @relation(fields: [categoryId], references: [id])
   categoryId  String?
   assignedTo   Membership?    @relation("TicketAssignedTo", fields: [assignedToId], references: [id])
   assignedToId String?
