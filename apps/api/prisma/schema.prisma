@@ -204,6 +204,14 @@ enum LeaseStatus {
   ended
 }
 
+enum AmendmentStatus {
+  proposed
+  countered
+  accepted
+  rejected
+  signed
+}
+
 model Lease {
   id          String       @id @default(cuid())
   org         Organization @relation(fields: [orgId], references: [id])
@@ -224,7 +232,24 @@ model Lease {
   invoices    Invoice[]
   deposits    Deposit[]
   documents   Document[]   @relation("LeaseDocuments")
+  amendments  LeaseAmendment[]
   createdAt   DateTime     @default(now())
+}
+
+model LeaseAmendment {
+  id         String          @id @default(cuid())
+  org        Organization    @relation(fields: [orgId], references: [id])
+  orgId      String
+  lease      Lease           @relation(fields: [leaseId], references: [id])
+  leaseId    String
+  version    Int
+  status     AmendmentStatus @default(proposed)
+  content    Json?
+  pdfUrl     String?
+  redlineUrl String?
+  createdAt  DateTime        @default(now())
+
+  @@unique([leaseId, version])
 }
 
 model Invoice {

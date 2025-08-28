@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from '@tenancy/ui';
 import { StatusChip } from '../../../components/StatusChip';
+import Link from 'next/link';
 
 export default function LeasePage() {
   const params = useParams();
@@ -30,6 +31,9 @@ export default function LeasePage() {
       <div className="space-x-2">
         <Button onClick={generatePdf}>Generate PDF</Button>
         <Button onClick={sendForSignature}>Send for signature</Button>
+        <Link href={`/leases/${id}/amendments`} className="underline">
+          View amendments
+        </Link>
       </div>
       <div className="flex space-x-2">
         {pdfUrl && <StatusChip text="PDF generated" color="green" />}

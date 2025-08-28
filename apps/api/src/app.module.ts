@@ -22,6 +22,9 @@ import { LeaseRepository } from './lease/lease.repository';
 import { LeaseService } from './lease/lease.service';
 import { PdfService } from './lease/pdf.service';
 import { EsignService } from './lease/esign.service';
+import { AmendmentController } from './lease/amendment.controller';
+import { AmendmentRepository } from './lease/amendment.repository';
+import { AmendmentService } from './lease/amendment.service';
 import { CertificateController } from './certificate/certificate.controller';
 import { CertificateService } from './certificate/certificate.service';
 import { CertificateRepository } from './certificate/certificate.repository';
@@ -38,6 +41,7 @@ import { PricingService } from './pricing/pricing.service';
     PropertyImportExportController,
     DeviceController,
     LeaseController,
+    AmendmentController,
     PricingController,
     CertificateController,
   ],
@@ -54,6 +58,8 @@ import { PricingService } from './pricing/pricing.service';
     SmartDeviceProvider,
     LeaseRepository,
     LeaseService,
+    AmendmentRepository,
+    AmendmentService,
     PdfService,
     EsignService,
     TenantGuard,
