@@ -68,6 +68,12 @@ export default async function TicketsPage() {
                   {t.review && <span> - {t.review}</span>}
                 </p>
               )}
+              <a
+                href={`/tickets/${t.id}/call`}
+                className="text-blue-600 underline text-sm"
+              >
+                Call Room
+              </a>
             </div>
           ))}
         </div>

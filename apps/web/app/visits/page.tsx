@@ -35,7 +35,13 @@ export default function VisitsPage() {
         <ul className="list-disc pl-4">
           {dayVisits.map((v) => (
             <li key={v.id}>
-              {v.type} at {new Date(v.scheduledAt).toLocaleTimeString()}
+              {v.type} at {new Date(v.scheduledAt).toLocaleTimeString()} -
+              <a
+                href={`/visits/${v.id}/call`}
+                className="text-blue-600 underline ml-1"
+              >
+                Call
+              </a>
             </li>
           ))}
         </ul>
