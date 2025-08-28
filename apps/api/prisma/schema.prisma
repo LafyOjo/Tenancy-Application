@@ -258,10 +258,22 @@ model Invoice {
   orgId     String
   lease     Lease        @relation(fields: [leaseId], references: [id])
   leaseId   String
+  subtotal  Float
+  tax       Float
   amount    Float
   dueDate   DateTime
   payments  Payment[]
+  lineItems InvoiceLineItem[]
   createdAt DateTime     @default(now())
+}
+
+model InvoiceLineItem {
+  id          String   @id @default(cuid())
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId   String
+  description String
+  amount      Float
+  taxRate     Float?
 }
 
 model Payment {

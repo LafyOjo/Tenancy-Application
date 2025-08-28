@@ -35,6 +35,7 @@ import { NoticeController } from './notice/notice.controller';
 import { NoticeRepository } from './notice/notice.repository';
 import { NoticeService } from './notice/notice.service';
 import { NoticePdfService } from './notice/pdf.service';
+import { InvoiceService } from './invoice/invoice.service';
 
 @Module({
   imports: [AuthModule, ScheduleModule.forRoot()],
@@ -75,6 +76,7 @@ import { NoticePdfService } from './notice/pdf.service';
     NoticeRepository,
     NoticeService,
     NoticePdfService,
+    InvoiceService,
   ],
 })
 export class AppModule {}
