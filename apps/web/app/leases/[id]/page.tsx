@@ -37,6 +37,9 @@ export default function LeasePage() {
         <Link href={`/leases/${id}/amendments`} className="underline">
           View amendments
         </Link>
+        <Link href={`/leases/${id}/shares`} className="underline">
+          Configure shares
+        </Link>
       </div>
       <div className="space-x-2">
         <AutopayToggle leaseId={id} />

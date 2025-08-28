@@ -19,6 +19,12 @@ const LeaseCreate = z.object({
 
 const LeaseUpdate = LeaseCreate.partial();
 
+const LeaseShareSchema = z.object({
+  membershipId: z.string(),
+  type: z.enum(['percentage', 'fixed']),
+  value: z.number(),
+});
+
 @ApiTags('leases')
 @Controller('leases')
 export class LeaseController {
@@ -50,6 +56,17 @@ export class LeaseController {
   @Post(':id/esign/start')
   startEsign(@Param('id') id: string) {
     return this.service.startEsign(id);
+  }
+
+  @Get(':id/shares')
+  getShares(@Param('id') id: string) {
+    return this.service.getShares(id);
+  }
+
+  @Patch(':id/shares')
+  updateShares(@Param('id') id: string, @Body() body: any) {
+    const shares = z.array(LeaseShareSchema).parse(body);
+    return this.service.updateShares(id, shares);
   }
 
   /** Webhook endpoint for e-sign completion. */

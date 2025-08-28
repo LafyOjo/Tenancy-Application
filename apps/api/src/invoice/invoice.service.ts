@@ -37,34 +37,52 @@ export class InvoiceService {
       const periodEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
       if (periodEnd < lease.startDate) return null;
       if (lease.endDate && periodStart > lease.endDate) return null;
-      const invoice = generateInvoiceForDate(lease, date);
-      await this.prisma.invoice.create({
-        data: {
-          leaseId: lease.id,
-          orgId: (await this.prisma.lease.findUnique({ where: { id: lease.id } })).orgId,
-          dueDate: invoice.periodStart,
-          subtotal: invoice.subtotal,
-          tax: invoice.tax,
-          amount: invoice.total,
-          lineItems: { create: invoice.lineItems },
-        },
-      });
-      return invoice;
-    } else {
-      const invoice = generateInvoiceForDate(lease, date);
-      await this.prisma.invoice.create({
-        data: {
-          leaseId: lease.id,
-          orgId: (await this.prisma.lease.findUnique({ where: { id: lease.id } })).orgId,
-          dueDate: invoice.periodStart,
-          subtotal: invoice.subtotal,
-          tax: invoice.tax,
-          amount: invoice.total,
-          lineItems: { create: invoice.lineItems },
-        },
-      });
-      return invoice;
     }
+    const invoice = generateInvoiceForDate(lease, date);
+    const created = await this.prisma.invoice.create({
+      data: {
+        leaseId: lease.id,
+        orgId: (await this.prisma.lease.findUnique({ where: { id: lease.id } })).orgId,
+        dueDate: invoice.periodStart,
+        subtotal: invoice.subtotal,
+        tax: invoice.tax,
+        amount: invoice.total,
+        lineItems: { create: invoice.lineItems },
+      },
+    });
+    await this.createInvoiceShares(lease, created.id, invoice.total);
+    return invoice;
+  }
+
+  private async createInvoiceShares(lease: Lease, invoiceId: string, total: number) {
+    const household = await this.prisma.household.findUnique({
+      where: { id: lease.householdId },
+      include: { members: true },
+    });
+    const shares = await this.prisma.leaseShare.findMany({ where: { leaseId: lease.id } });
+    let data: { membershipId: string; amount: number }[] = [];
+    if (shares.length > 0) {
+      for (const share of shares) {
+        const amount =
+          share.type === 'percentage' ? (total * share.value) / 100 : share.value;
+        data.push({ membershipId: share.membershipId, amount });
+      }
+    } else if (household) {
+      const equal = household.members.length
+        ? total / household.members.length
+        : 0;
+      data = household.members.map(m => ({ membershipId: m.id, amount: equal }));
+    }
+    if (data.length) {
+      const orgId = lease.orgId;
+      await this.prisma.invoiceShare.createMany({
+        data: data.map(d => ({ ...d, invoiceId, orgId })),
+      });
+    }
+  }
+
+  async getShares(id: string) {
+    return this.prisma.invoiceShare.findMany({ where: { invoiceId: id } });
   }
 }
 

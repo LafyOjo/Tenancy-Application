@@ -45,6 +45,8 @@ model Organization {
   LeaseAmendment LeaseAmendment[]
   Notice         Notice[]
   LedgerEntry    LedgerEntry[]
+  LeaseShare     LeaseShare[]
+  InvoiceShare   InvoiceShare[]
 }
 
 model User {
@@ -108,6 +110,8 @@ model Membership {
   createdAt  DateTime     @default(now())
   households Household[]  @relation("HouseholdMembers")
   Ticket     Ticket[]
+  LeaseShare LeaseShare[]
+  InvoiceShare InvoiceShare[]
 }
 
 model Property {
@@ -218,6 +222,11 @@ enum AmendmentStatus {
   signed
 }
 
+enum ShareType {
+  percentage
+  fixed
+}
+
 model Lease {
   id          String       @id @default(cuid())
   org         Organization @relation(fields: [orgId], references: [id])
@@ -242,7 +251,20 @@ model Lease {
   notices     Notice[]
   ledgerEntries LedgerEntry[]
   mandates    PaymentMandate[]
+  shares      LeaseShare[]
   createdAt   DateTime     @default(now())
+}
+
+model LeaseShare {
+  id           String       @id @default(cuid())
+  org          Organization @relation(fields: [orgId], references: [id])
+  orgId        String
+  lease        Lease        @relation(fields: [leaseId], references: [id])
+  leaseId      String
+  membership   Membership   @relation(fields: [membershipId], references: [id])
+  membershipId String
+  type         ShareType
+  value        Float
 }
 
 model LeaseAmendment {
@@ -273,8 +295,20 @@ model Invoice {
   dueDate   DateTime
   payments  Payment[]
   lineItems InvoiceLineItem[]
+  shares    InvoiceShare[]
   createdAt DateTime     @default(now())
   paidAt    DateTime?
+}
+
+model InvoiceShare {
+  id           String       @id @default(cuid())
+  org          Organization @relation(fields: [orgId], references: [id])
+  orgId        String
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id])
+  invoiceId    String
+  membership   Membership   @relation(fields: [membershipId], references: [id])
+  membershipId String
+  amount       Float
 }
 
 model InvoiceLineItem {

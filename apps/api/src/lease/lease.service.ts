@@ -2,6 +2,7 @@ import { Injectable, Scope } from '@nestjs/common';
 import { LeaseRepository } from './lease.repository';
 import { PdfService } from './pdf.service';
 import { EsignService } from './esign.service';
+import { PrismaService } from '../prisma.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LeaseService {
@@ -9,6 +10,7 @@ export class LeaseService {
     private readonly repo: LeaseRepository,
     private readonly pdf: PdfService,
     private readonly esign: EsignService,
+    private readonly prisma: PrismaService,
   ) {}
 
   create(data: {
@@ -54,6 +56,25 @@ export class LeaseService {
   /** Handle webhook callback for e-sign completion. */
   async handleWebhook(body: any) {
     return this.esign.webhook(body);
+  }
+
+  getShares(leaseId: string) {
+    return this.prisma.leaseShare.findMany({ where: { leaseId } });
+  }
+
+  async updateShares(
+    leaseId: string,
+    shares: { membershipId: string; type: string; value: number }[],
+  ) {
+    const lease = await this.repo.findUnique(leaseId);
+    if (!lease) throw new Error('Lease not found');
+    await this.prisma.leaseShare.deleteMany({ where: { leaseId } });
+    if (shares.length) {
+      await this.prisma.leaseShare.createMany({
+        data: shares.map(s => ({ ...s, leaseId, orgId: lease.orgId })),
+      });
+    }
+    return this.getShares(leaseId);
   }
 }
 
