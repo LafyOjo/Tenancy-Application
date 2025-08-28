@@ -37,6 +37,7 @@ import { NoticeService } from './notice/notice.service';
 import { NoticePdfService } from './notice/pdf.service';
 import { InvoiceService } from './invoice/invoice.service';
 import { InvoiceReminderService } from './invoice/invoice.scheduler';
+import { InvoiceController } from './invoice/invoice.controller';
 import { PaymentController } from './payment/payment.controller';
 import { PaymentService } from './payment/payment.service';
 import { StripeProvider } from './payment/providers/stripe.provider';
@@ -58,6 +59,7 @@ import { LedgerService } from './ledger/ledger.service';
     PricingController,
     CertificateController,
     NoticeController,
+    InvoiceController,
     PaymentController,
     LedgerController,
   ],
