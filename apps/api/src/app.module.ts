@@ -40,6 +40,7 @@ import { InvoiceReminderService } from './invoice/invoice.scheduler';
 import { InvoiceController } from './invoice/invoice.controller';
 import { PaymentController } from './payment/payment.controller';
 import { PaymentService } from './payment/payment.service';
+import { PaymentPlanService } from './payment/payment-plan.service';
 import { StripeProvider } from './payment/providers/stripe.provider';
 import { PaypalProvider } from './payment/providers/paypal.provider';
 import { SquareProvider } from './payment/providers/square.provider';
@@ -94,6 +95,7 @@ import { SublettingService } from './subletting/subletting.service';
     InvoiceService,
     InvoiceReminderService,
     PaymentService,
+    PaymentPlanService,
     StripeProvider,
     PaypalProvider,
     SquareProvider,

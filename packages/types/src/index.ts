@@ -56,3 +56,14 @@ export interface SublettingPayout {
   platformFee: number;
   createdAt: Date;
 }
+
+export interface PaymentScheduleItem {
+  /** Date when the installment is due */
+  dueDate: Date;
+  /** Amount to be charged on the due date */
+  amount: number;
+  /** Whether the installment has been successfully paid */
+  paid: boolean;
+  /** Flag indicating the installment has moved to dunning */
+  inDunning?: boolean;
+}
