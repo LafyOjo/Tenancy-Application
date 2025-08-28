@@ -71,6 +71,7 @@ export interface PaymentScheduleItem {
 export type TicketStatus = 'open' | 'in_progress' | 'completed';
 export type TicketPriority = 'low' | 'medium' | 'high';
 export type TicketType = 'maintenance' | 'support' | 'other';
+export type AssignmentStatus = 'pending' | 'accepted' | 'declined';
 
 export interface TicketCategory {
   id: string;
@@ -98,6 +99,13 @@ export interface Ticket {
   type: TicketType;
   priority: TicketPriority;
   status: TicketStatus;
+  assignedToId?: string;
+  assignmentStatus: AssignmentStatus;
+  eta?: Date;
+  partsCost: number;
+  labourCost: number;
+  rating?: number;
+  review?: string;
   categoryId?: string;
   category?: TicketCategory;
   notes: TicketNote[];
