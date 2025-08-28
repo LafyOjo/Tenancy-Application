@@ -33,6 +33,7 @@ model Organization {
   Lease          Lease[]
   Invoice        Invoice[]
   Payment        Payment[]
+  paymentMandates PaymentMandate[]
   Ticket         Ticket[]
   Visit          Visit[]
   UtilityReading UtilityReading[]
@@ -233,6 +234,7 @@ model Lease {
   deposits    Deposit[]
   documents   Document[]   @relation("LeaseDocuments")
   amendments  LeaseAmendment[]
+  mandates    PaymentMandate[]
   createdAt   DateTime     @default(now())
 }
 
@@ -265,6 +267,7 @@ model Invoice {
   payments  Payment[]
   lineItems InvoiceLineItem[]
   createdAt DateTime     @default(now())
+  paidAt    DateTime?
 }
 
 model InvoiceLineItem {
@@ -282,8 +285,22 @@ model Payment {
   orgId     String
   invoice   Invoice      @relation(fields: [invoiceId], references: [id])
   invoiceId String
+  provider  String
+  externalId String @unique
   amount    Float
   paidAt    DateTime     @default(now())
+}
+
+model PaymentMandate {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  lease     Lease        @relation(fields: [leaseId], references: [id])
+  leaseId   String
+  provider  String
+  externalId String
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now())
 }
 
 model Ticket {

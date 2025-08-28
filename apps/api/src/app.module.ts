@@ -36,6 +36,11 @@ import { NoticeRepository } from './notice/notice.repository';
 import { NoticeService } from './notice/notice.service';
 import { NoticePdfService } from './notice/pdf.service';
 import { InvoiceService } from './invoice/invoice.service';
+import { PaymentController } from './payment/payment.controller';
+import { PaymentService } from './payment/payment.service';
+import { StripeProvider } from './payment/providers/stripe.provider';
+import { PaypalProvider } from './payment/providers/paypal.provider';
+import { SquareProvider } from './payment/providers/square.provider';
 
 @Module({
   imports: [AuthModule, ScheduleModule.forRoot()],
@@ -50,6 +55,7 @@ import { InvoiceService } from './invoice/invoice.service';
     PricingController,
     CertificateController,
     NoticeController,
+    PaymentController,
   ],
   providers: [
     AppService,
@@ -77,6 +83,10 @@ import { InvoiceService } from './invoice/invoice.service';
     NoticeService,
     NoticePdfService,
     InvoiceService,
+    PaymentService,
+    StripeProvider,
+    PaypalProvider,
+    SquareProvider,
   ],
 })
 export class AppModule {}

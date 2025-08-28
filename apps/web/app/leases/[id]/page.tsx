@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from '@tenancy/ui';
 import { StatusChip } from '../../../components/StatusChip';
+import { AutopayToggle } from '../../../components/AutopayToggle';
+import { PayNowButton } from '../../../components/PayNowButton';
+import { ProviderBadge } from '../../../components/ProviderBadge';
 import Link from 'next/link';
 
 export default function LeasePage() {
@@ -34,6 +37,15 @@ export default function LeasePage() {
         <Link href={`/leases/${id}/amendments`} className="underline">
           View amendments
         </Link>
+      </div>
+      <div className="space-x-2">
+        <AutopayToggle leaseId={id} />
+        <PayNowButton invoiceId={id} />
+      </div>
+      <div className="flex space-x-2">
+        <ProviderBadge provider="stripe" />
+        <ProviderBadge provider="paypal" />
+        <ProviderBadge provider="square" />
       </div>
       <div className="flex space-x-2">
         {pdfUrl && <StatusChip text="PDF generated" color="green" />}
