@@ -18,6 +18,12 @@ enum Role {
   admin
 }
 
+enum SubscriptionPlan {
+  standard
+  priority_support
+  discounted_repairs
+}
+
 model Organization {
   id                 String               @id @default(cuid())
   name               String
@@ -115,6 +121,7 @@ model Membership {
   userId       String
   role         Role
   createdAt    DateTime       @default(now())
+  subscriptionPlan SubscriptionPlan @default(standard)
   households   Household[]    @relation("HouseholdMembers")
   Ticket       Ticket[]
   assignedTickets Ticket[] @relation("TicketAssignedTo")

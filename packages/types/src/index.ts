@@ -14,6 +14,11 @@ export interface Notice {
   createdAt: Date;
 }
 
+export type SubscriptionPlan =
+  | 'standard'
+  | 'priority_support'
+  | 'discounted_repairs';
+
 export interface LateFeePolicy {
   /** Amount applied when invoice is 3 days overdue */
   firstLateFee: number;
