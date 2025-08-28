@@ -36,6 +36,7 @@ import { NoticeRepository } from './notice/notice.repository';
 import { NoticeService } from './notice/notice.service';
 import { NoticePdfService } from './notice/pdf.service';
 import { InvoiceService } from './invoice/invoice.service';
+import { InvoiceReminderService } from './invoice/invoice.scheduler';
 import { PaymentController } from './payment/payment.controller';
 import { PaymentService } from './payment/payment.service';
 import { StripeProvider } from './payment/providers/stripe.provider';
@@ -83,6 +84,7 @@ import { SquareProvider } from './payment/providers/square.provider';
     NoticeService,
     NoticePdfService,
     InvoiceService,
+    InvoiceReminderService,
     PaymentService,
     StripeProvider,
     PaypalProvider,

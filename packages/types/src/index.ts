@@ -13,3 +13,10 @@ export interface Notice {
   acknowledgedAt?: Date;
   createdAt: Date;
 }
+
+export interface LateFeePolicy {
+  /** Amount applied when invoice is 3 days overdue */
+  firstLateFee: number;
+  /** Amount applied when invoice is 7 days overdue */
+  secondLateFee: number;
+}
