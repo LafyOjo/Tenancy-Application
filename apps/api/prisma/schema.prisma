@@ -35,6 +35,8 @@ model Organization {
   Payment            Payment[]
   paymentMandates    PaymentMandate[]
   Ticket             Ticket[]
+  TicketCategory     TicketCategory[]
+  TicketNote         TicketNote[]
   Visit              Visit[]
   UtilityReading     UtilityReading[]
   Deposit            Deposit[]
@@ -113,6 +115,7 @@ model Membership {
   createdAt    DateTime       @default(now())
   households   Household[]    @relation("HouseholdMembers")
   Ticket       Ticket[]
+  TicketNote   TicketNote[]
   LeaseShare   LeaseShare[]
   InvoiceShare InvoiceShare[]
 }
@@ -357,12 +360,57 @@ model Ticket {
   createdBy   Membership?  @relation(fields: [createdById], references: [id])
   createdById String?
   description String
-  status      String
+  type        TicketType
+  priority    TicketPriority
+  status      TicketStatus   @default(open)
+  category    TicketCategory @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  notes       TicketNote[]
   visits      Visit[]
   documents   Document[]   @relation("TicketDocuments")
   createdAt   DateTime     @default(now())
   Property    Property?    @relation(fields: [propertyId], references: [id])
   propertyId  String?
+}
+
+enum TicketType {
+  maintenance
+  support
+  other
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+}
+
+enum TicketStatus {
+  open
+  in_progress
+  completed
+}
+
+model TicketCategory {
+  id       String       @id @default(cuid())
+  org      Organization @relation(fields: [orgId], references: [id])
+  orgId    String
+  name     String
+  slaHours Int
+  tickets  Ticket[]
+}
+
+model TicketNote {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  ticket    Ticket       @relation(fields: [ticketId], references: [id])
+  ticketId  String
+  author    Membership?  @relation(fields: [authorId], references: [id])
+  authorId  String?
+  content   String
+  internal  Boolean      @default(false)
+  createdAt DateTime     @default(now())
 }
 
 model Visit {

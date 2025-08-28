@@ -67,3 +67,39 @@ export interface PaymentScheduleItem {
   /** Flag indicating the installment has moved to dunning */
   inDunning?: boolean;
 }
+
+export type TicketStatus = 'open' | 'in_progress' | 'completed';
+export type TicketPriority = 'low' | 'medium' | 'high';
+export type TicketType = 'maintenance' | 'support' | 'other';
+
+export interface TicketCategory {
+  id: string;
+  orgId: string;
+  name: string;
+  slaHours: number;
+}
+
+export interface TicketNote {
+  id: string;
+  orgId: string;
+  ticketId: string;
+  authorId?: string;
+  content: string;
+  internal: boolean;
+  createdAt: Date;
+}
+
+export interface Ticket {
+  id: string;
+  orgId: string;
+  unitId: string;
+  createdById?: string;
+  description: string;
+  type: TicketType;
+  priority: TicketPriority;
+  status: TicketStatus;
+  categoryId?: string;
+  category?: TicketCategory;
+  notes: TicketNote[];
+  createdAt: Date;
+}
