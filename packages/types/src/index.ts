@@ -20,3 +20,14 @@ export interface LateFeePolicy {
   /** Amount applied when invoice is 7 days overdue */
   secondLateFee: number;
 }
+
+export interface LedgerEntry {
+  id: string;
+  orgId: string;
+  leaseId?: string;
+  date: Date;
+  description?: string;
+  debitAccount: string;
+  creditAccount: string;
+  amount: number;
+}
