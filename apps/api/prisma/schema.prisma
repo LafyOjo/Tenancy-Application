@@ -461,8 +461,22 @@ model Visit {
   propertyId  String?
   scheduledAt DateTime
   notes       String?
+  type        VisitType
+  outcome     VisitOutcome?
+  followUpAt  DateTime?
   Unit        Unit?        @relation(fields: [unitId], references: [id])
   unitId      String?
+}
+
+enum VisitType {
+  inspection
+  engineer
+}
+
+enum VisitOutcome {
+  completed
+  no_show
+  follow_up_required
 }
 
 model UtilityReading {
