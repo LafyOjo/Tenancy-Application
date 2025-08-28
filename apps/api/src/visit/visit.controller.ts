@@ -46,5 +46,11 @@ export class VisitController {
     const data = VisitUpdate.parse(body);
     return this.service.update(id, data);
   }
+
+  @Post(':id/snapshot')
+  addSnapshot(@Param('id') id: string, @Body() body: any) {
+    const data = z.object({ image: z.string() }).parse(body);
+    return this.service.addSnapshot(id, data.image);
+  }
 }
 

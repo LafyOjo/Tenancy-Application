@@ -5,11 +5,13 @@ import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 import { createEvent } from 'ics';
 import { VisitRepository } from './visit.repository';
+import { PrismaService } from '../prisma.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class VisitService {
   constructor(
     private readonly repo: VisitRepository,
+    private readonly prisma: PrismaService,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
@@ -30,6 +32,14 @@ export class VisitService {
 
   update(id: string, data: any) {
     return this.repo.update(id, data);
+  }
+
+  async addSnapshot(id: string, image: string) {
+    const orgId = (this.request as any).orgId;
+    const visit = await this.repo.findUnique(id);
+    return this.prisma.document.create({
+      data: { orgId, ticketId: visit?.ticketId || undefined, url: image },
+    });
   }
 
   private async sendNotifications(

@@ -50,6 +50,13 @@ export class TicketService {
     return ticket;
   }
 
+  addSnapshot(id: string, image: string) {
+    const orgId = (this.request as any).orgId;
+    return this.prisma.document.create({
+      data: { orgId, ticketId: id, url: image },
+    });
+  }
+
   private async notifyTenants(unitId: string, message: string) {
     const orgId = (this.request as any).orgId;
     const shares = await this.prisma.leaseShare.findMany({
