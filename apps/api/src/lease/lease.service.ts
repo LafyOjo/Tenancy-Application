@@ -31,6 +31,10 @@ export class LeaseService {
     });
   }
 
+  update(id: string, data: any) {
+    return this.repo.update(id, data);
+  }
+
   /** Generate a lease PDF and upload to S3. */
   async generatePdf(id: string) {
     const lease = await this.repo.findUnique(id, {

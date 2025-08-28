@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Patch } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
 import { LeaseService } from './lease.service';
@@ -17,6 +17,8 @@ const LeaseCreate = z.object({
   status: z.enum(['draft', 'active', 'renewing', 'ended']).optional(),
 });
 
+const LeaseUpdate = LeaseCreate.partial();
+
 @ApiTags('leases')
 @Controller('leases')
 export class LeaseController {
@@ -30,6 +32,12 @@ export class LeaseController {
       startDate: new Date(data.startDate),
       endDate: data.endDate ? new Date(data.endDate) : undefined,
     });
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: any) {
+    const data = LeaseUpdate.parse(body);
+    return this.service.update(id, data);
   }
 
   /** Generate and return a lease PDF URL. */
