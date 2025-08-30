@@ -8,7 +8,7 @@
     "start": "node dist/main.js",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "typecheck": "tsc --noEmit",
-    "test": "tsc src/invoice/invoice.utils.ts src/invoice/invoice.service.spec.ts src/payment/payment-plan.service.spec.ts --module commonjs --target es2019 --outDir dist-test --esModuleInterop --skipLibCheck && node dist-test/invoice.service.spec.js && node dist-test/payment-plan.service.spec.js"
+    "test": "tsc src/invoice/invoice.utils.ts src/invoice/invoice.service.spec.ts src/payment/payment-plan.service.spec.ts --module commonjs --target es2019 --outDir dist-test --esModuleInterop --skipLibCheck && node dist-test/invoice/invoice.service.spec.js && node dist-test/payment/payment-plan.service.spec.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.5",

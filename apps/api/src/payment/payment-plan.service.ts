@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { PaymentScheduleItem } from '@tenancy/types';
+interface PaymentScheduleItem {
+  dueDate: Date;
+  amount: number;
+  paid?: boolean;
+  inDunning?: boolean;
+}
 
-@Injectable()
 export class PaymentPlanService {
   generateSchedule(
     principal: number,
