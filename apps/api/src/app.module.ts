@@ -62,6 +62,9 @@ import { VisitRepository } from './visit/visit.repository';
 import { VisitService } from './visit/visit.service';
 import { AssessmentController } from './assessment/assessment.controller';
 import { AssessmentService } from './assessment/assessment.service';
+import { UtilityReadingController } from './utility/utility-reading.controller';
+import { UtilityReadingRepository } from './utility/utility-reading.repository';
+import { UtilityReadingService } from './utility/utility-reading.service';
 
 @Module({
   imports: [
@@ -95,6 +98,7 @@ import { AssessmentService } from './assessment/assessment.service';
     SensorEventController,
     MarketplaceController,
     AssessmentController,
+    UtilityReadingController,
   ],
   providers: [
     AppService,
@@ -138,6 +142,8 @@ import { AssessmentService } from './assessment/assessment.service';
     SensorEventProcessor,
     MarketplaceService,
     AssessmentService,
+    UtilityReadingRepository,
+    UtilityReadingService,
   ],
 })
 export class AppModule {}

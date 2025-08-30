@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma.service';
 import {
-  Lease,
   InvoiceData,
+  InvoiceLineItem,
+  calculateTotals,
   generateInvoiceForDate,
 } from './invoice.utils';
+import { UtilityReadingService } from '../utility/utility-reading.service';
 
 /**
  * Service responsible for generating invoices from leases.
@@ -13,12 +15,15 @@ import {
  */
 @Injectable()
 export class InvoiceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly utilities: UtilityReadingService,
+  ) {}
 
   /** Cron that runs monthly to generate invoices for active leases. */
   @Cron('0 0 1 * *')
   async handleCron() {
-    const leases: Lease[] = await this.prisma.lease.findMany({
+    const leases = await this.prisma.lease.findMany({
       where: { status: 'active' },
     });
     const today = new Date();
@@ -31,18 +36,51 @@ export class InvoiceService {
    * Generate the invoice covering the period that contains `date`.
    * For simplicity we do not check for existing invoices.
    */
-  async generateCurrentInvoice(lease: Lease, date: Date): Promise<InvoiceData | null> {
+  async generateCurrentInvoice(lease: any, date: Date): Promise<InvoiceData | null> {
     if (lease.rentFrequency === 'monthly') {
       const periodStart = new Date(date.getFullYear(), date.getMonth(), 1);
       const periodEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
       if (periodEnd < lease.startDate) return null;
       if (lease.endDate && periodStart > lease.endDate) return null;
     }
-    const invoice = generateInvoiceForDate(lease, date);
+    const base = generateInvoiceForDate(lease, date);
+    let lineItems: InvoiceLineItem[] = [...(base?.lineItems || [])];
+    if (!base) return null;
+    if (lease.utilityAllowances) {
+      for (const [type, config] of Object.entries(
+        lease.utilityAllowances as Record<string, any>,
+      )) {
+        const consumption = await this.utilities.getConsumption(
+          lease.unitId,
+          type,
+          base.periodStart,
+          base.periodEnd,
+        );
+        const allowance = (config as any).allowance ?? 0;
+        const rate = (config as any).rate ?? 0;
+        const over = consumption - allowance;
+        if (over > 0 && rate > 0) {
+          lineItems.push({
+            description: `${type} overage`,
+            amount: over * rate,
+          });
+        }
+      }
+    }
+    const totals = calculateTotals(lineItems);
+    const invoice: InvoiceData = {
+      leaseId: lease.id,
+      periodStart: base.periodStart,
+      periodEnd: base.periodEnd,
+      lineItems,
+      ...totals,
+    };
     const created = await this.prisma.invoice.create({
       data: {
         leaseId: lease.id,
-        orgId: (await this.prisma.lease.findUnique({ where: { id: lease.id } })).orgId,
+        orgId: (
+          await this.prisma.lease.findUnique({ where: { id: lease.id } })
+        ).orgId,
         dueDate: invoice.periodStart,
         subtotal: invoice.subtotal,
         tax: invoice.tax,
