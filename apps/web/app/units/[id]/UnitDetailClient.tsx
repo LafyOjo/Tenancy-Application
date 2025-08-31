@@ -14,6 +14,7 @@ export default function UnitDetailClient({ unit }: Props) {
   const [images, setImages] = useState<string[]>(unit.virtualTourImages || []);
   const [pricing, setPricing] = useState<any>(null);
   const [events, setEvents] = useState<any[]>([]);
+  const [green, setGreen] = useState<any>(null);
 
   useEffect(() => {
     fetch(
@@ -21,6 +22,9 @@ export default function UnitDetailClient({ unit }: Props) {
     )
       .then((res) => res.json())
       .then((data) => setPricing(data));
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/units/${unit.id}/green-score`)
+      .then((res) => res.json())
+      .then((data) => setGreen(data));
   }, [unit.id]);
 
   useEffect(() => {
@@ -73,6 +77,19 @@ export default function UnitDetailClient({ unit }: Props) {
               <button onClick={applySuggestion} className="border px-2">
                 Apply to draft lease
               </button>
+            </div>
+          )}
+          {green && (
+            <div className="mt-4 space-y-2">
+              <div>Green score: {green.score.toFixed(1)}</div>
+              <div>Trend: {green.trend.join(' -> ')}</div>
+              <div>Premium rent suggestion: £{green.premiumRent}</div>
+              <a
+                href={`${process.env.NEXT_PUBLIC_API_URL}/units/${unit.id}/green-report`}
+                className="underline"
+              >
+                Download efficiency report
+              </a>
             </div>
           )}
         </div>
