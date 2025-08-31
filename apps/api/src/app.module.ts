@@ -73,6 +73,8 @@ import {
 import { SmartMeterPollingService } from './utility/smart-meter.polling.service';
 import { GreenScoreRepository } from './green/green-score.repository';
 import { GreenService } from './green/green.service';
+import { UtilityProviderController } from './utility-provider/utility-provider.controller';
+import { UtilityProviderService } from './utility-provider/utility-provider.service';
 
 @Module({
   imports: [
@@ -107,6 +109,7 @@ import { GreenService } from './green/green.service';
     MarketplaceController,
     AssessmentController,
     UtilityReadingController,
+    UtilityProviderController,
   ],
   providers: [
     AppService,
@@ -156,6 +159,7 @@ import { GreenService } from './green/green.service';
     SmartMeterPollingService,
     GreenScoreRepository,
     GreenService,
+    UtilityProviderService,
     {
       provide: SMART_METER_CONNECTOR,
       useClass: MockSmartMeterConnector,
