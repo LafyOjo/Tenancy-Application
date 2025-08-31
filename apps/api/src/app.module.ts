@@ -75,6 +75,8 @@ import { GreenScoreRepository } from './green/green-score.repository';
 import { GreenService } from './green/green.service';
 import { UtilityProviderController } from './utility-provider/utility-provider.controller';
 import { UtilityProviderService } from './utility-provider/utility-provider.service';
+import { AnalyticsController } from './analytics/analytics.controller';
+import { AnalyticsService } from './analytics/analytics.service';
 
 @Module({
   imports: [
@@ -110,6 +112,7 @@ import { UtilityProviderService } from './utility-provider/utility-provider.serv
     AssessmentController,
     UtilityReadingController,
     UtilityProviderController,
+    AnalyticsController,
   ],
   providers: [
     AppService,
@@ -160,6 +163,7 @@ import { UtilityProviderService } from './utility-provider/utility-provider.serv
     GreenScoreRepository,
     GreenService,
     UtilityProviderService,
+    AnalyticsService,
     {
       provide: SMART_METER_CONNECTOR,
       useClass: MockSmartMeterConnector,
