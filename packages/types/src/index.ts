@@ -116,3 +116,16 @@ export interface Ticket {
   notes: TicketNote[];
   createdAt: Date;
 }
+
+export interface UtilityProvider {
+  id: string;
+  name: string;
+  rate: number;
+  estimatedSavings: number;
+}
+
+export interface ReferralCommission {
+  providerId: string;
+  amount: number;
+}
+
