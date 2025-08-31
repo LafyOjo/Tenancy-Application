@@ -65,6 +65,12 @@ import { AssessmentService } from './assessment/assessment.service';
 import { UtilityReadingController } from './utility/utility-reading.controller';
 import { UtilityReadingRepository } from './utility/utility-reading.repository';
 import { UtilityReadingService } from './utility/utility-reading.service';
+import { SmartMeterAdapter } from './utility/smart-meter.adapter';
+import {
+  SMART_METER_CONNECTOR,
+  MockSmartMeterConnector,
+} from './utility/smart-meter.connector';
+import { SmartMeterPollingService } from './utility/smart-meter.polling.service';
 
 @Module({
   imports: [
@@ -144,6 +150,12 @@ import { UtilityReadingService } from './utility/utility-reading.service';
     AssessmentService,
     UtilityReadingRepository,
     UtilityReadingService,
+    SmartMeterAdapter,
+    SmartMeterPollingService,
+    {
+      provide: SMART_METER_CONNECTOR,
+      useClass: MockSmartMeterConnector,
+    },
   ],
 })
 export class AppModule {}
