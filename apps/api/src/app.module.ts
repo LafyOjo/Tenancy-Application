@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bull';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
@@ -80,10 +82,13 @@ import { AnalyticsService } from './analytics/analytics.service';
 import { MarketDataService } from './analytics/market-data.service';
 import { IntegrationModule } from './integration/integration.module';
 import { HealthModule } from './health/health.module';
+import { ApiKeyModule } from './api-key/api-key.module';
 
 @Module({
   imports: [
     AuthModule,
+    ApiKeyModule,
+    ThrottlerModule.forRoot({ ttl: 60, limit: 100 }),
     ScheduleModule.forRoot(),
     BullModule.forRoot({
       redis: {
@@ -173,6 +178,10 @@ import { HealthModule } from './health/health.module';
     {
       provide: SMART_METER_CONNECTOR,
       useClass: MockSmartMeterConnector,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

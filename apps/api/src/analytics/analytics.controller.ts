@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
 import { AnalyticsService } from './analytics.service';
+import { ApiKeyGuard } from '../api-key/api-key.guard';
 
 const Filters = z.object({
   startDate: z.string().optional(),
@@ -27,6 +28,7 @@ function parseFilters(query: any) {
 }
 
 @ApiTags('analytics')
+@UseGuards(ApiKeyGuard)
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private service: AnalyticsService) {}
