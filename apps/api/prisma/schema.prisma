@@ -556,6 +556,9 @@ model ApiKey {
   org        Organization @relation(fields: [orgId], references: [id])
   orgId      String
   key        String       @unique
+  scopes     String[]
+  quota      Int
+  usage      Int          @default(0)
   createdAt  DateTime     @default(now())
   lastUsedAt DateTime?
 }
