@@ -25,6 +25,17 @@ const LeaseShareSchema = z.object({
   value: z.number(),
 });
 
+const DepositCreate = z.object({
+  amount: z.number(),
+  receivedAt: z.string().datetime(),
+  schemeRef: z.string().optional(),
+  protectedAt: z.string().datetime().optional(),
+});
+
+const MoveOut = z.object({
+  deductionAmount: z.number().optional(),
+});
+
 @ApiTags('leases')
 @Controller('leases')
 export class LeaseController {
@@ -67,6 +78,32 @@ export class LeaseController {
   updateShares(@Param('id') id: string, @Body() body: any) {
     const shares = z.array(LeaseShareSchema).parse(body);
     return this.service.updateShares(id, shares);
+  }
+
+  @Get(':id/deposit')
+  getDeposit(@Param('id') id: string) {
+    return this.service.getDeposit(id);
+  }
+
+  @Post(':id/deposit')
+  createDeposit(@Param('id') id: string, @Body() body: any) {
+    const data = DepositCreate.parse(body);
+    return this.service.createDeposit(id, {
+      ...data,
+      receivedAt: new Date(data.receivedAt),
+      protectedAt: data.protectedAt ? new Date(data.protectedAt) : undefined,
+    });
+  }
+
+  @Post(':id/move-out')
+  moveOut(@Param('id') id: string, @Body() body: any) {
+    const data = MoveOut.parse(body);
+    return this.service.recordMoveOut(id, data.deductionAmount);
+  }
+
+  @Post(':id/move-out/approve')
+  approveMoveOut(@Param('id') id: string) {
+    return this.service.approveMoveOut(id);
   }
 
   /** Webhook endpoint for e-sign completion. */

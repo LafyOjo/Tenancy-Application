@@ -1,4 +1,6 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 import { LeaseRepository } from './lease.repository';
 import { PdfService } from './pdf.service';
 import { EsignService } from './esign.service';
@@ -11,7 +13,12 @@ export class LeaseService {
     private readonly pdf: PdfService,
     private readonly esign: EsignService,
     private readonly prisma: PrismaService,
+    @Inject(REQUEST) private readonly request: Request,
   ) {}
+
+  private get orgId() {
+    return (this.request as any).orgId as string;
+  }
 
   create(data: {
     unitId: string;
@@ -75,6 +82,37 @@ export class LeaseService {
       });
     }
     return this.getShares(leaseId);
+  }
+
+  getDeposit(leaseId: string) {
+    return this.prisma.deposit.findFirst({ where: { leaseId, orgId: this.orgId } });
+  }
+
+  createDeposit(
+    leaseId: string,
+    data: { amount: number; receivedAt: Date; schemeRef?: string; protectedAt?: Date },
+  ) {
+    return this.prisma.deposit.create({
+      data: { ...data, leaseId, orgId: this.orgId },
+    });
+  }
+
+  async recordMoveOut(leaseId: string, deductionAmount = 0) {
+    const deposit = await this.getDeposit(leaseId);
+    if (!deposit) throw new Error('Deposit not found');
+    return this.prisma.deposit.update({
+      where: { id: deposit.id },
+      data: { returnedAt: new Date(), deductionAmount, approved: false },
+    });
+  }
+
+  async approveMoveOut(leaseId: string) {
+    const deposit = await this.getDeposit(leaseId);
+    if (!deposit) throw new Error('Deposit not found');
+    return this.prisma.deposit.update({
+      where: { id: deposit.id },
+      data: { approved: true },
+    });
   }
 }
 
