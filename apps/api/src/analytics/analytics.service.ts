@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { MarketDataService } from './market-data.service';
 
 type Filters = {
   startDate?: Date;
@@ -10,7 +11,10 @@ type Filters = {
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private market: MarketDataService,
+  ) {}
 
   private buildInvoiceWhere(filters: Filters) {
     const date: any = {};
@@ -146,6 +150,10 @@ export class AnalyticsService {
       }
     }
     return { overage };
+  }
+
+  async marketComparison(area: string, yieldRate: number, vacancy: number) {
+    return this.market.compare(area, yieldRate, vacancy);
   }
 }
 

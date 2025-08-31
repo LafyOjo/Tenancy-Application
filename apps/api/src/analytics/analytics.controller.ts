@@ -10,6 +10,12 @@ const Filters = z.object({
   unitId: z.string().optional(),
 });
 
+const Market = z.object({
+  area: z.string().optional(),
+  yield: z.coerce.number(),
+  vacancy: z.coerce.number(),
+});
+
 function parseFilters(query: any) {
   const { startDate, endDate, propertyId, unitId } = Filters.parse(query);
   return {
@@ -48,6 +54,12 @@ export class AnalyticsController {
   @Get('utility-overage')
   overage(@Query() query: any) {
     return this.service.utilityOverage(parseFilters(query));
+  }
+
+  @Get('market-comparison')
+  market(@Query() query: any) {
+    const { area, yield: y, vacancy } = Market.parse(query);
+    return this.service.marketComparison(area ?? '', y, vacancy);
   }
 }
 

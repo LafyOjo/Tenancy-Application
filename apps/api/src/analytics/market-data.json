@@ -1,0 +1,7 @@
+[
+  { "area": "Central", "yield": 5.1, "vacancy": 3.2 },
+  { "area": "North", "yield": 4.8, "vacancy": 4.1 },
+  { "area": "South", "yield": 5.5, "vacancy": 2.5 },
+  { "area": "East", "yield": 4.2, "vacancy": 5.7 },
+  { "area": "West", "yield": 5.0, "vacancy": 3.9 }
+]

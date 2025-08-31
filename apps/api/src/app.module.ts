@@ -77,6 +77,7 @@ import { UtilityProviderController } from './utility-provider/utility-provider.c
 import { UtilityProviderService } from './utility-provider/utility-provider.service';
 import { AnalyticsController } from './analytics/analytics.controller';
 import { AnalyticsService } from './analytics/analytics.service';
+import { MarketDataService } from './analytics/market-data.service';
 
 @Module({
   imports: [
@@ -164,6 +165,7 @@ import { AnalyticsService } from './analytics/analytics.service';
     GreenService,
     UtilityProviderService,
     AnalyticsService,
+    MarketDataService,
     {
       provide: SMART_METER_CONNECTOR,
       useClass: MockSmartMeterConnector,
