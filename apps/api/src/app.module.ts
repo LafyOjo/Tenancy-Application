@@ -85,6 +85,10 @@ import { HealthModule } from './health/health.module';
 import { ApiKeyModule } from './api-key/api-key.module';
 import { OrgController } from './org/org.controller';
 import { OrgService } from './org/org.service';
+import { ReferralController } from './referral/referral.controller';
+import { ReferralService } from './referral/referral.service';
+import { DisputeController } from './dispute/dispute.controller';
+import { DisputeService } from './dispute/dispute.service';
 
 @Module({
   imports: [
@@ -124,6 +128,8 @@ import { OrgService } from './org/org.service';
     AssessmentController,
     UtilityReadingController,
     UtilityProviderController,
+    ReferralController,
+    DisputeController,
     AnalyticsController,
     OrgController,
   ],
@@ -176,6 +182,8 @@ import { OrgService } from './org/org.service';
     GreenScoreRepository,
     GreenService,
     UtilityProviderService,
+    ReferralService,
+    DisputeService,
     AnalyticsService,
     MarketDataService,
     OrgService,

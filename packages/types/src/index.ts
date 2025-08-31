@@ -148,3 +148,34 @@ export interface OrganizationTheme {
   emailTemplate?: string;
 }
 
+export interface ReferralLink {
+  code: string;
+  providerId: string;
+  url: string;
+}
+
+export interface ReferralAttribution {
+  id: string;
+  providerId: string;
+  code: string;
+  commission: number;
+  createdAt: Date;
+}
+
+export interface PayoutLedgerEntry {
+  id: string;
+  referralId: string;
+  amount: number;
+  paid: boolean;
+  createdAt: Date;
+}
+
+export interface Dispute {
+  id: string;
+  claimant: string;
+  respondent: string;
+  issue: string;
+  status: 'open' | 'resolved';
+  createdAt: Date;
+}
+
