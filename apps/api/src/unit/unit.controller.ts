@@ -7,10 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
 import { UnitService } from './unit.service';
+import { GreenService } from '../green/green.service';
+import { PricingService } from '../pricing/pricing.service';
+import { Response } from 'express';
 
 const UnitCreate = z.object({
   name: z.string(),
@@ -28,7 +32,11 @@ const UploadPhoto = z.object({
 @ApiTags('units')
 @Controller('units')
 export class UnitController {
-  constructor(private readonly service: UnitService) {}
+  constructor(
+    private readonly service: UnitService,
+    private readonly green: GreenService,
+    private readonly pricing: PricingService,
+  ) {}
 
   @Get()
   list(@Query('propertyId') propertyId: string) {
@@ -67,6 +75,23 @@ export class UnitController {
   uploadVirtualTourPhoto(@Param('id') id: string, @Body() body: any) {
     const { filename, contentType } = UploadPhoto.parse(body);
     return this.service.createVirtualTourImageUpload(id, filename, contentType);
+  }
+
+  @Get(':id/green-score')
+  async greenScore(@Param('id') id: string) {
+    const { score, trend } = await this.green.getScore(id);
+    const pricing = await this.pricing.suggest(id);
+    return { score, trend, premiumRent: pricing.suggestedRent };
+  }
+
+  @Get(':id/green-report')
+  async greenReport(@Param('id') id: string, @Res() res: Response) {
+    const pdf = await this.green.generateReport(id);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="green-report.pdf"',
+    });
+    res.send(pdf);
   }
 }
 

@@ -160,6 +160,7 @@ model Unit {
   devices             Device[]
   certificates        Certificate[]
   sensorEvents        SensorEvent[]
+  greenScores        GreenScore[]
   createdAt           DateTime         @default(now())
   imageUrl            String?
   virtualTourEmbedUrl String?
@@ -488,6 +489,16 @@ model UtilityReading {
   type       String
   reading    Float
   recordedAt DateTime     @default(now())
+}
+
+model GreenScore {
+  id        String       @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  unit      Unit         @relation(fields: [unitId], references: [id])
+  unitId    String
+  score     Float
+  createdAt DateTime     @default(now())
 }
 
 model Deposit {

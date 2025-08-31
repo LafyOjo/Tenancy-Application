@@ -71,6 +71,8 @@ import {
   MockSmartMeterConnector,
 } from './utility/smart-meter.connector';
 import { SmartMeterPollingService } from './utility/smart-meter.polling.service';
+import { GreenScoreRepository } from './green/green-score.repository';
+import { GreenService } from './green/green.service';
 
 @Module({
   imports: [
@@ -152,6 +154,8 @@ import { SmartMeterPollingService } from './utility/smart-meter.polling.service'
     UtilityReadingService,
     SmartMeterAdapter,
     SmartMeterPollingService,
+    GreenScoreRepository,
+    GreenService,
     {
       provide: SMART_METER_CONNECTOR,
       useClass: MockSmartMeterConnector,

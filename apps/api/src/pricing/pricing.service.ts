@@ -1,9 +1,13 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { LeaseRepository } from '../lease/lease.repository';
+import { GreenScoreRepository } from '../green/green-score.repository';
 
 @Injectable({ scope: Scope.REQUEST })
 export class PricingService {
-  constructor(private readonly leases: LeaseRepository) {}
+  constructor(
+    private readonly leases: LeaseRepository,
+    private readonly greenScores: GreenScoreRepository,
+  ) {}
 
   /**
    * Compute suggested rent for a unit using simple factors.
@@ -16,7 +20,14 @@ export class PricingService {
       take: 1,
     });
     const currentRent = lease?.rentAmount ?? 0;
-    const suggestedRent = this.computeSuggested(currentRent);
+    const baseRent = this.computeSuggested(currentRent);
+    const [gs] = await this.greenScores.findMany({
+      where: { unitId },
+      orderBy: { createdAt: 'desc' },
+      take: 1,
+    });
+    const premium = gs?.score ?? 0;
+    const suggestedRent = Math.round(baseRent * (1 + premium / 1000));
     return { leaseId: lease?.id, currentRent, suggestedRent };
   }
 
