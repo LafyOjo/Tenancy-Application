@@ -1,6 +1,7 @@
 import '../i18n';
 import './globals.css';
 import type { ReactNode, CSSProperties } from 'react';
+import BackgroundSync from '../components/BackgroundSync';
 
 async function getTheme() {
   const orgId = process.env.NEXT_PUBLIC_ORG_ID;
@@ -28,6 +29,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           fontFamily: 'var(--brand-font)',
         }}
       >
+        <BackgroundSync />
         {children}
       </body>
     </html>
