@@ -140,3 +140,11 @@ export interface DepositInsuranceQuote {
   policyUrl: string;
 }
 
+export interface OrganizationTheme {
+  logoUrl?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  fontFamily?: string;
+  emailTemplate?: string;
+}
+

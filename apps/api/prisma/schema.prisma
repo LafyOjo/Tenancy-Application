@@ -28,6 +28,11 @@ model Organization {
   id                 String               @id @default(cuid())
   name               String
   createdAt          DateTime             @default(now())
+  logoUrl            String?
+  primaryColor       String?
+  secondaryColor     String?
+  fontFamily         String?
+  emailTemplate      String?              @db.Text
   memberships        Membership[]
   properties         Property[]
   apiKeys            ApiKey[]
