@@ -18,6 +18,10 @@ export default function LeasePage() {
   const [deposit, setDeposit] = useState<any | null>(null);
   const [insurance, setInsurance] = useState<DepositInsuranceQuote | null>(null);
   const [deduction, setDeduction] = useState(0);
+  const [risk, setRisk] = useState<
+    | { churnRisk: number; maintenanceForecast: number }
+    | null
+  >(null);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
@@ -30,6 +34,12 @@ export default function LeasePage() {
     fetch(`${apiUrl}/leases/${id}/deposit/insurance`)
       .then(res => res.json())
       .then(setInsurance);
+  }, [apiUrl, id]);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/analytics/risk/${id}`)
+      .then(res => res.json())
+      .then(setRisk);
   }, [apiUrl, id]);
 
   const generatePdf = async () => {
@@ -82,6 +92,12 @@ export default function LeasePage() {
         <ProviderBadge provider="paypal" />
         <ProviderBadge provider="square" />
       </div>
+      {risk && (
+        <div className="space-y-1">
+          <div>Churn Risk: {(risk.churnRisk * 100).toFixed(0)}%</div>
+          <div>Maintenance Forecast: ${risk.maintenanceForecast.toFixed(2)}</div>
+        </div>
+      )}
       {deposit && (
         <div className="space-y-2">
           <div>Deposit Amount: {deposit.amount}</div>
