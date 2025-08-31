@@ -93,6 +93,13 @@ import { NotificationController } from './notification/notification.controller';
 import { NotificationService } from './notification/notification.service';
 import { NotificationRepository } from './notification/notification.repository';
 import { WebPushService } from './notification/web-push.service';
+import { SessionController } from './session/session.controller';
+import { SessionService } from './session/session.service';
+import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
+import { AuditLogController } from './audit-log/audit-log.controller';
+import { AuditLogService } from './audit-log/audit-log.service';
+import { MfaGuard } from './auth/guards/mfa.guard';
 
 @Module({
   imports: [
@@ -137,6 +144,9 @@ import { WebPushService } from './notification/web-push.service';
     AnalyticsController,
     OrgController,
     NotificationController,
+    SessionController,
+    UserController,
+    AuditLogController,
   ],
   providers: [
     AppService,
@@ -203,6 +213,13 @@ import { WebPushService } from './notification/web-push.service';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: MfaGuard,
+    },
+    SessionService,
+    UserService,
+    AuditLogService,
   ],
 })
 export class AppModule {}
