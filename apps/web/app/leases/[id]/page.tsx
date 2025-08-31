@@ -8,6 +8,7 @@ import { AutopayToggle } from '../../../components/AutopayToggle';
 import { PayNowButton } from '../../../components/PayNowButton';
 import { ProviderBadge } from '../../../components/ProviderBadge';
 import Link from 'next/link';
+import { DepositInsuranceQuote } from '@tenancy/types';
 
 export default function LeasePage() {
   const params = useParams();
@@ -15,6 +16,7 @@ export default function LeasePage() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [signStatus, setSignStatus] = useState<'idle' | 'pending' | 'signed'>('idle');
   const [deposit, setDeposit] = useState<any | null>(null);
+  const [insurance, setInsurance] = useState<DepositInsuranceQuote | null>(null);
   const [deduction, setDeduction] = useState(0);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -22,6 +24,12 @@ export default function LeasePage() {
     fetch(`${apiUrl}/leases/${id}/deposit`)
       .then(res => res.json())
       .then(setDeposit);
+  }, [apiUrl, id]);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/leases/${id}/deposit/insurance`)
+      .then(res => res.json())
+      .then(setInsurance);
   }, [apiUrl, id]);
 
   const generatePdf = async () => {
@@ -106,6 +114,20 @@ export default function LeasePage() {
           {deposit.returnedAt && !deposit.approved && (
             <Button onClick={approveMoveOut}>Approve Deduction</Button>
           )}
+        </div>
+      )}
+      {insurance && (
+        <div className="space-y-2">
+          <div>
+            Insurance Premium: {insurance.cost} ({insurance.billingFrequency})
+          </div>
+          <div>Cash Deposit: {insurance.depositAmount}</div>
+          <div>
+            Upfront Savings: {insurance.depositAmount - insurance.cost}
+          </div>
+          <Link href={insurance.policyUrl} className="underline">
+            View policy
+          </Link>
         </div>
       )}
       <div className="flex space-x-2">

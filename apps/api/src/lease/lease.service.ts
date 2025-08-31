@@ -5,6 +5,7 @@ import { LeaseRepository } from './lease.repository';
 import { PdfService } from './pdf.service';
 import { EsignService } from './esign.service';
 import { PrismaService } from '../prisma.service';
+import { DepositInsuranceQuote } from '@tenancy/types';
 
 @Injectable({ scope: Scope.REQUEST })
 export class LeaseService {
@@ -86,6 +87,20 @@ export class LeaseService {
 
   getDeposit(leaseId: string) {
     return this.prisma.deposit.findFirst({ where: { leaseId, orgId: this.orgId } });
+  }
+
+  /** Return a deposit insurance quote including billing and policy details. */
+  async getDepositInsuranceQuote(leaseId: string): Promise<DepositInsuranceQuote> {
+    const lease = await this.repo.findUnique(leaseId);
+    if (!lease) throw new Error('Lease not found');
+    const depositAmount = lease.depositAmount ?? 0;
+    const cost = Math.round(depositAmount * 0.05 * 100) / 100;
+    return {
+      depositAmount,
+      cost,
+      billingFrequency: 'monthly',
+      policyUrl: 'https://example.com/policies/deposit-insurance.pdf',
+    };
   }
 
   createDeposit(

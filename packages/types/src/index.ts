@@ -129,3 +129,14 @@ export interface ReferralCommission {
   amount: number;
 }
 
+export interface DepositInsuranceQuote {
+  /** Amount of traditional cash deposit */
+  depositAmount: number;
+  /** Recurring insurance premium cost */
+  cost: number;
+  /** Billing frequency for the premium, e.g. monthly */
+  billingFrequency: string;
+  /** URL to the insurance policy document */
+  policyUrl: string;
+}
+
