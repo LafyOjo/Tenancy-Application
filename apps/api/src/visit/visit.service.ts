@@ -58,6 +58,11 @@ export class VisitService {
   private async sendEmail(email: string, visit: any) {
     const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
     if (!SMTP_HOST) return;
+    const orgId = (this.request as any).orgId;
+    const org = await this.prisma.organization.findUnique({
+      where: { id: orgId },
+      select: { emailTemplate: true },
+    });
     const transporter = nodemailer.createTransport({
       host: SMTP_HOST,
       port: +(SMTP_PORT || 587),
@@ -75,10 +80,12 @@ export class VisitService {
       start,
       duration: { hours: 1 },
     });
+    const text = `Visit scheduled at ${visit.scheduledAt.toISOString()}`;
     await transporter.sendMail({
       to: email,
       subject: 'Visit scheduled',
-      text: `Visit scheduled at ${visit.scheduledAt.toISOString()}`,
+      text,
+      html: org?.emailTemplate || undefined,
       icalEvent: { filename: 'visit.ics', method: 'REQUEST', content: value },
     });
   }

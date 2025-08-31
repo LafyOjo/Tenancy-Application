@@ -83,6 +83,8 @@ import { MarketDataService } from './analytics/market-data.service';
 import { IntegrationModule } from './integration/integration.module';
 import { HealthModule } from './health/health.module';
 import { ApiKeyModule } from './api-key/api-key.module';
+import { OrgController } from './org/org.controller';
+import { OrgService } from './org/org.service';
 
 @Module({
   imports: [
@@ -123,6 +125,7 @@ import { ApiKeyModule } from './api-key/api-key.module';
     UtilityReadingController,
     UtilityProviderController,
     AnalyticsController,
+    OrgController,
   ],
   providers: [
     AppService,
@@ -175,6 +178,7 @@ import { ApiKeyModule } from './api-key/api-key.module';
     UtilityProviderService,
     AnalyticsService,
     MarketDataService,
+    OrgService,
     {
       provide: SMART_METER_CONNECTOR,
       useClass: MockSmartMeterConnector,
