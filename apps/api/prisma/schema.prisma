@@ -82,6 +82,8 @@ model User {
   auditLogs     AuditLog[]     @relation("ActorLogs")
   accounts      Account[]
   sessions      Session[]
+  notificationPreferences NotificationPreference[]
+  pushSubscriptions PushSubscription[]
 }
 
 model Account {
@@ -552,8 +554,44 @@ model Notification {
   user      User         @relation(fields: [userId], references: [id])
   userId    String
   message   String
+  event     String
   read      Boolean      @default(false)
   createdAt DateTime     @default(now())
+}
+
+enum NotificationFrequency {
+  instant
+  daily
+  weekly
+}
+
+model NotificationPreference {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  event     String
+  email     Boolean @default(true)
+  sms       Boolean @default(false)
+  whatsapp  Boolean @default(false)
+  push      Boolean @default(true)
+  frequency NotificationFrequency @default(instant)
+  quietStart String?
+  quietEnd   String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, event])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  endpoint  String
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, endpoint])
 }
 
 model ApiKey {

@@ -89,6 +89,10 @@ import { ReferralController } from './referral/referral.controller';
 import { ReferralService } from './referral/referral.service';
 import { DisputeController } from './dispute/dispute.controller';
 import { DisputeService } from './dispute/dispute.service';
+import { NotificationController } from './notification/notification.controller';
+import { NotificationService } from './notification/notification.service';
+import { NotificationRepository } from './notification/notification.repository';
+import { WebPushService } from './notification/web-push.service';
 
 @Module({
   imports: [
@@ -132,6 +136,7 @@ import { DisputeService } from './dispute/dispute.service';
     DisputeController,
     AnalyticsController,
     OrgController,
+    NotificationController,
   ],
   providers: [
     AppService,
@@ -187,6 +192,9 @@ import { DisputeService } from './dispute/dispute.service';
     AnalyticsService,
     MarketDataService,
     OrgService,
+    NotificationRepository,
+    NotificationService,
+    WebPushService,
     {
       provide: SMART_METER_CONNECTOR,
       useClass: MockSmartMeterConnector,
