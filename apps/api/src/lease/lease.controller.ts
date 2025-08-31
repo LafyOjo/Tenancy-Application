@@ -85,6 +85,12 @@ export class LeaseController {
     return this.service.getDeposit(id);
   }
 
+  /** Get deposit alternative insurance quote with billing & policy docs */
+  @Get(':id/deposit/insurance')
+  getDepositInsurance(@Param('id') id: string) {
+    return this.service.getDepositInsuranceQuote(id);
+  }
+
   @Post(':id/deposit')
   createDeposit(@Param('id') id: string, @Body() body: any) {
     const data = DepositCreate.parse(body);
