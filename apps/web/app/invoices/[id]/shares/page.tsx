@@ -1,37 +1,35 @@
-'use client';
+import i18n from '@/i18n';
+import { formatCurrency } from '@/lib/format';
+import { headers } from 'next/headers';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+interface Share {
+  membershipId: string;
+  amount: number;
+  currency?: string;
+}
 
-export default function InvoiceSharesPage() {
-  const params = useParams();
-  const id = (params as any).id as string;
+export default async function InvoiceSharesPage({ params }: { params: { id: string } }) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  const [shares, setShares] = useState<any[]>([]);
+  const res = await fetch(`${apiUrl}/invoices/${params.id}/shares`);
+  const shares: Share[] = await res.json();
 
-  useEffect(() => {
-    const fetchShares = async () => {
-      const res = await fetch(`${apiUrl}/invoices/${id}/shares`);
-      const data = await res.json();
-      setShares(data);
-    };
-    fetchShares();
-  }, [id]);
+  const locale = headers().get('accept-language')?.split(',')[0] || 'en-US';
+  const t = i18n.getFixedT(locale, 'invoices');
 
   return (
     <div className="space-y-4">
       <table className="min-w-full text-sm">
         <thead>
           <tr>
-            <th>Member</th>
-            <th>Amount</th>
+            <th>{t('member')}</th>
+            <th>{t('amount')}</th>
           </tr>
         </thead>
         <tbody>
           {shares.map(share => (
             <tr key={share.membershipId}>
               <td>{share.membershipId}</td>
-              <td>{share.amount}</td>
+              <td>{formatCurrency(share.amount, share.currency || 'USD', locale)}</td>
             </tr>
           ))}
         </tbody>
