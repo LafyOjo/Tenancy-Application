@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
 import { AnalyticsService } from './analytics.service';
@@ -60,6 +60,11 @@ export class AnalyticsController {
   market(@Query() query: any) {
     const { area, yield: y, vacancy } = Market.parse(query);
     return this.service.marketComparison(area ?? '', y, vacancy);
+  }
+
+  @Get('risk/:leaseId')
+  risk(@Param('leaseId') id: string) {
+    return this.service.risk(id);
   }
 }
 
