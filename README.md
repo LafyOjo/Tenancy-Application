@@ -8,6 +8,8 @@ This repository is a Turborepo monorepo containing:
 - **packages/types** – Shared TypeScript types.
 - **packages/config** – Shared configuration utilities.
 
+A dispute resolution page allows evidence uploads, side-by-side claims, mock mediation, a timeline view, and a final decision record.
+
 ## Development
 
 Use `npm run dev` to start all apps in development mode. Run `npm run build` to build, `npm run lint` to lint and `npm run typecheck` for type checking across the monorepo.
