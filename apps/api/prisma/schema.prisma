@@ -510,6 +510,10 @@ model Deposit {
   amount     Float
   receivedAt DateTime
   returnedAt DateTime?
+  schemeRef       String?
+  protectedAt     DateTime?
+  deductionAmount Float?
+  approved        Boolean     @default(false)
 }
 
 model Document {

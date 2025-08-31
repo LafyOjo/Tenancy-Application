@@ -1,0 +1,5 @@
+ALTER TABLE "Deposit"
+  ADD COLUMN "schemeRef" TEXT,
+  ADD COLUMN "protectedAt" TIMESTAMP(3),
+  ADD COLUMN "deductionAmount" DOUBLE PRECISION,
+  ADD COLUMN "approved" BOOLEAN NOT NULL DEFAULT false;
