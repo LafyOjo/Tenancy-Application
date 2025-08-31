@@ -9,6 +9,9 @@ type Filters = {
   endDate: string;
   propertyId: string;
   unitId: string;
+  area: string;
+  yield: string;
+  vacancy: string;
 };
 
 type Metrics = {
@@ -17,6 +20,8 @@ type Metrics = {
   rate: number;
   mttr: number;
   overage: number;
+  yieldPercentile: number;
+  vacancyPercentile: number;
 };
 
 export default function AnalyticsPage() {
@@ -25,6 +30,9 @@ export default function AnalyticsPage() {
     endDate: '',
     propertyId: '',
     unitId: '',
+    area: '',
+    yield: '',
+    vacancy: '',
   });
   const [metrics, setMetrics] = useState<Metrics | null>(null);
 
@@ -35,7 +43,7 @@ export default function AnalyticsPage() {
     });
     const query = params.toString();
     async function load() {
-      const [a, d, r, m, o] = await Promise.all([
+      const [a, d, r, m, o, p] = await Promise.all([
         fetch(`${API_URL}/analytics/arrears?${query}`).then((res) => res.json()),
         fetch(`${API_URL}/analytics/dso?${query}`).then((res) => res.json()),
         fetch(`${API_URL}/analytics/on-time-rate?${query}`).then((res) =>
@@ -45,6 +53,9 @@ export default function AnalyticsPage() {
         fetch(`${API_URL}/analytics/utility-overage?${query}`).then((res) =>
           res.json(),
         ),
+        fetch(`${API_URL}/analytics/market-comparison?${query}`).then((res) =>
+          res.json(),
+        ),
       ]);
       setMetrics({
         arrears: a.arrears ?? 0,
@@ -52,6 +63,8 @@ export default function AnalyticsPage() {
         rate: r.rate ?? 0,
         mttr: m.mttr ?? 0,
         overage: o.overage ?? 0,
+        yieldPercentile: p.yieldPercentile ?? 0,
+        vacancyPercentile: p.vacancyPercentile ?? 0,
       });
     }
     load();
@@ -94,6 +107,30 @@ export default function AnalyticsPage() {
           onChange={handleChange}
           className="border p-1"
         />
+        <input
+          type="text"
+          name="area"
+          placeholder="Area"
+          value={filters.area}
+          onChange={handleChange}
+          className="border p-1"
+        />
+        <input
+          type="number"
+          name="yield"
+          placeholder="Yield %"
+          value={filters.yield}
+          onChange={handleChange}
+          className="border p-1"
+        />
+        <input
+          type="number"
+          name="vacancy"
+          placeholder="Vacancy %"
+          value={filters.vacancy}
+          onChange={handleChange}
+          className="border p-1"
+        />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="p-4 border rounded">
@@ -115,6 +152,15 @@ export default function AnalyticsPage() {
         <div className="p-4 border rounded">
           <h2 className="font-semibold mb-2">Utility Overage</h2>
           <p>{metrics ? metrics.overage.toFixed(2) : '-'}</p>
+        </div>
+        <div className="p-4 border rounded">
+          <h2 className="font-semibold mb-2">Market Percentiles</h2>
+          <p>
+            Yield: {metrics ? metrics.yieldPercentile.toFixed(0) : '-'}%
+          </p>
+          <p>
+            Vacancy: {metrics ? metrics.vacancyPercentile.toFixed(0) : '-'}%
+          </p>
         </div>
       </div>
     </div>
