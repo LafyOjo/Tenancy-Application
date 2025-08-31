@@ -78,6 +78,8 @@ import { UtilityProviderService } from './utility-provider/utility-provider.serv
 import { AnalyticsController } from './analytics/analytics.controller';
 import { AnalyticsService } from './analytics/analytics.service';
 import { MarketDataService } from './analytics/market-data.service';
+import { IntegrationModule } from './integration/integration.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -90,6 +92,8 @@ import { MarketDataService } from './analytics/market-data.service';
       },
     }),
     BullModule.registerQueue({ name: 'sensor-events' }),
+    IntegrationModule,
+    HealthModule,
   ],
   controllers: [
     AppController,
