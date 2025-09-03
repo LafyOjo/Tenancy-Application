@@ -21,19 +21,38 @@ class MockAdapter implements SmartDeviceAdapter {
 
 class LockyAdapter implements SmartDeviceAdapter {
   async lock(device: Device) {
-    // Placeholder for Locky API call
-    console.log(`Locky lock ${device.externalId}`);
+    const base = process.env.LOCKY_API_URL || 'https://api.locky.dev';
+    const res = await fetch(
+      `${base}/devices/${device.externalId}/lock`,
+      { method: 'POST' },
+    );
+    if (!res.ok) {
+      throw new Error(`Locky lock failed: ${res.status}`);
+    }
   }
   async unlock(device: Device) {
-    // Placeholder for Locky API call
-    console.log(`Locky unlock ${device.externalId}`);
+    const base = process.env.LOCKY_API_URL || 'https://api.locky.dev';
+    const res = await fetch(
+      `${base}/devices/${device.externalId}/unlock`,
+      { method: 'POST' },
+    );
+    if (!res.ok) {
+      throw new Error(`Locky unlock failed: ${res.status}`);
+    }
   }
 }
 
 class ThermixAdapter implements SmartDeviceAdapter {
   async setTemperature(device: Device, temperature: number) {
-    // Placeholder for Thermix API call
-    console.log(`ThermiX set temp ${temperature} on ${device.externalId}`);
+    const base = process.env.THERMIX_API_URL || 'https://api.thermix.dev';
+    const res = await fetch(`${base}/devices/${device.externalId}/temperature`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ temperature }),
+    });
+    if (!res.ok) {
+      throw new Error(`ThermiX set temp failed: ${res.status}`);
+    }
   }
 }
 
